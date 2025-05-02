@@ -1,18 +1,17 @@
 import mongoose, { Schema } from "mongoose";
 
-interface IUser {
-  email: string;
-  password: string;
-}
+import { IUser } from "./types";
+
 
 const userSchema: Schema = new Schema(
-  {
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-  },
-  {
-    timestamps: true,
-  }
+    {
+        email: { type: String, required: true, unique: true },
+        password: { type: String, required: true },
+        type: { type: String, enum: ["user", "admin"], default: "user", required: false },
+    },
+    {
+        timestamps: true,
+    }
 );
 
 const User = mongoose.models.User || mongoose.model<IUser>("User", userSchema);
