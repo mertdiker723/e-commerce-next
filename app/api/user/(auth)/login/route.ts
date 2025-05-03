@@ -6,7 +6,42 @@ import User from "@/models/api/user";
 
 // Connection
 import dbConnection from "@/lib/mongodb";
-import { encrypt, setCookie } from "@/lib/token";
+import { decrypt, encrypt, setCookie } from "@/lib/token";
+
+export const GET = async (req: NextRequest) => {
+    await dbConnection();
+
+    try {
+        const token = req.cookies.get("token")?.value;
+        if (!token) {
+            return NextResponse.json(
+                { message: "Token not found" },
+                { status: 401 }
+            );
+        }
+        const payload = await decrypt(token);
+        
+        if (!payload) {
+            return NextResponse.json(
+                { message: "Invalid token" },
+                { status: 401 }
+            );
+        }
+
+        const user = await User.findById(payload.id).select("-password");
+
+        if (!user) {
+            return NextResponse.json(
+                { message: "User not found" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json({ user }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({ message: error }, { status: 500 });
+    }
+};
 
 export const POST = async (req: NextRequest) => {
     await dbConnection();
@@ -44,6 +79,7 @@ export const POST = async (req: NextRequest) => {
         const token = await encrypt({
             id: user._id.toString(),
             email: user.email,
+            type: user.type,
         });
 
         const response = NextResponse.json(

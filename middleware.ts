@@ -13,9 +13,6 @@ const publicPaths = ["/login", "/register", "/forgotPassword"];
 export function middleware(request: NextRequest) {
     const token = request.cookies.get("token")?.value;
     const pathname = request.nextUrl.pathname;
-
-    console.log("token", token);
-
     if (!token && restrictedPaths.includes(pathname)) {
         return NextResponse.redirect(new URL("/login", request.url));
     }

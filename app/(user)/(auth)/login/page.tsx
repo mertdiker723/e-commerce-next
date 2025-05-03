@@ -3,6 +3,7 @@
 // Libraries
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 import Link from "next/link";
 
 // Common
@@ -14,6 +15,7 @@ import { ADMIN } from "@/lib/userTypes";
 
 // Action
 import { submitLogin } from "./action";
+import { setUser } from "@/lib/redux/slices/userSlice";
 
 const Login = () => {
     const [state, formAction, isPending] = useActionState(submitLogin, {
@@ -22,48 +24,38 @@ const Login = () => {
         user: null,
     });
 
+    // Redux
+    const dispatch = useDispatch();
+
     const router = useRouter();
-    
+
     const { error, success, user } = state;
-    
+
     useEffect(() => {
-        if (success) {
+        if (success && user) {
+            dispatch(setUser(user));
             if (user.type === ADMIN) {
                 router.push("/admin/home");
                 return;
             }
             router.push("/");
         }
-    }, [success, router, user]);
+    }, [success, router, user, dispatch]);
 
     return (
         <>
             <form className="space-y-3" action={formAction}>
                 {error && (
                     <div className="w-full">
-                        <p className="text-sm text-red-700 break-words">
-                            {error}
-                        </p>
+                        <p className="text-sm text-red-700 break-words">{error}</p>
                     </div>
                 )}
-                <label
-                    htmlFor="email"
-                    className="block text-sm/6 font-medium text-gray-900 mb-2"
-                >
+                <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900 mb-2">
                     Email
                 </label>
-                <Input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    placeholder="Email"
-                />
+                <Input type="email" id="email" name="email" required placeholder="Email" />
                 <div className="flex items-center justify-between mb-2">
-                    <label
-                        htmlFor="password"
-                        className="block text-sm/6 font-medium text-gray-900"
-                    >
+                    <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
                         Password
                     </label>
                     <div className="text-sm">

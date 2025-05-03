@@ -31,6 +31,7 @@ export const POST = async (req: NextRequest) => {
         const token = await encrypt({
             id: data?._id.toString(),
             email: data?.email,
+            type: data?.type,
         });
 
         const response = NextResponse.json(

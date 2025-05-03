@@ -9,6 +9,7 @@ const encodedKey = new TextEncoder().encode(secretKey);
 type EncryptPayloadType = {
     id: string;
     email: string;
+    type: string;
 };
 
 export const encrypt = async (payload: EncryptPayloadType) => {
@@ -28,7 +29,9 @@ export const decrypt = async (session: string | undefined = "") => {
         });
         return payload;
     } catch (error) {
-        console.log(error);
+        return {
+            error: error instanceof Error ? error.message : "An unknown error occurred",
+        }
     }
 };
 
