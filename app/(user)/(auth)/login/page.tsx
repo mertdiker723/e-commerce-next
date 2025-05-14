@@ -15,7 +15,7 @@ import { ADMIN } from "@/lib/userTypes";
 
 // Action
 import { submitLogin } from "./action";
-import { setUser } from "@/lib/redux/slices/userSlice";
+import { setUser, resetWasLoggedOut } from "@/lib/redux/slices/userSlice";
 
 const Login = () => {
     const [state, formAction, isPending] = useActionState(submitLogin, {
@@ -39,6 +39,7 @@ const Login = () => {
                 return;
             }
             router.push("/");
+            dispatch(resetWasLoggedOut());
         }
     }, [success, router, user, dispatch]);
 

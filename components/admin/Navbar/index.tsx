@@ -1,10 +1,42 @@
 "use client";
 
+import { useActionState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
+// Common
+import Button from "@/common/Button";
+
+// Action
+import { submitLogout } from "./action";
+
+// Libs
+import { logout } from "@/lib/redux/slices/userSlice";
 
 const AdminNavbar = () => {
+    const [state, formAction, isPending] = useActionState(submitLogout, {
+        error: "",
+        success: false,
+    });
+
+    // Redux
+    const dispatch = useDispatch();
+
+    // Router
+    const router = useRouter();
+
+    // State
+    const { success } = state;
+
+    useEffect(() => {
+        if (success) {
+            dispatch(logout());
+            router.push("/");
+        }
+    }, [success, dispatch, router]);
+
     return (
         <nav className="bg-gray-800">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -40,9 +72,14 @@ const AdminNavbar = () => {
                             <button className="rounded-md cursor-pointer px-3 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                                 Cart
                             </button>
-                            <button className="rounded-md cursor-pointer px-3 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                                Logout
-                            </button>
+                            <form action={formAction}>
+                                <Button
+                                    type="submit"
+                                    label="Logout"
+                                    customClassName="rounded-md cursor-pointer px-3 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                                    isPending={isPending}
+                                />
+                            </form>
                         </div>
                     </div>
                 </div>

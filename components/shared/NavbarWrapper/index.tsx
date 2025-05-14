@@ -1,4 +1,6 @@
 "use client";
+
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePathname } from "next/navigation";
 
@@ -6,26 +8,25 @@ import { usePathname } from "next/navigation";
 import AdminNavbar from "@/components/admin/Navbar";
 import UserNavbar from "@/components/user/Navbar";
 
-// Lib
+// Libs
 import { RootState } from "@/lib/redux/store";
 import { ADMIN } from "@/lib/userTypes";
-import { useEffect } from "react";
 import { setUser } from "@/lib/redux/slices/userSlice";
 
 // Core
 import { FORGOTPASSWORD, LOGIN, REGISTER } from "@/core/routeConstants";
 
-const unShownPaths = [LOGIN, REGISTER, FORGOTPASSWORD];
+const unShownPaths = [LOGIN, REGISTER, FORGOTPASSWORD]; // Paths where the navbar should not be shown
 
 const NavbarWrapper = () => {
     const dispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.auth.user);
+    const { user, wasLoggedOut } = useSelector((state: RootState) => state.auth);
     const pathname = usePathname();
 
     useEffect(() => {
         (async () => {
             if (unShownPaths.includes(pathname)) return;
-            if (!user) {
+            if (!user && !wasLoggedOut) {
                 try {
                     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/login`, {
                         credentials: "include",
@@ -44,7 +45,7 @@ const NavbarWrapper = () => {
                 }
             }
         })();
-    }, [user, dispatch, pathname]);
+    }, [user, dispatch, pathname, wasLoggedOut]);
 
     const shouldHideNavbar = !user || unShownPaths.includes(pathname);
 

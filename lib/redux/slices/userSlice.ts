@@ -6,8 +6,9 @@ type User = {
     type: string;
 };
 
-const initialState: { user: User | null } = {
+const initialState: { user: User | null; wasLoggedOut: boolean } = {
     user: null,
+    wasLoggedOut: false, // Track if the user was logged out
 };
 
 const authSlice = createSlice({
@@ -19,9 +20,13 @@ const authSlice = createSlice({
         },
         logout: (state) => {
             state.user = null;
+            state.wasLoggedOut = true;
+        },
+        resetWasLoggedOut: (state) => {
+            state.wasLoggedOut = false;
         },
     },
 });
 
-export const { setUser, logout } = authSlice.actions;
+export const { setUser, logout, resetWasLoggedOut } = authSlice.actions;
 export default authSlice.reducer;

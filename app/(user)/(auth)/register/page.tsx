@@ -3,6 +3,7 @@
 // Libraries
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 
 // Action
 import { submitRegister } from "./action";
@@ -13,6 +14,7 @@ import { ADMIN } from "@/lib/userTypes";
 // Common
 import Button from "@/common/Button";
 import Input from "@/common/Input/input";
+import { resetWasLoggedOut } from "@/lib/redux/slices/userSlice";
 
 const Register = () => {
     const [state, formAction, isPending] = useActionState(submitRegister, {
@@ -20,6 +22,10 @@ const Register = () => {
         success: false,
         user: null,
     });
+
+    // Redux
+    const dispatch = useDispatch();
+
     const router = useRouter();
 
     const { error, success, user } = state;
@@ -31,8 +37,9 @@ const Register = () => {
                 return;
             }
             router.push("/");
+            dispatch(resetWasLoggedOut());
         }
-    }, [success, router, user]);
+    }, [success, router, user, dispatch]);
 
     return (
         <>
