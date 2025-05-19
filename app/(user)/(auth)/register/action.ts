@@ -14,19 +14,17 @@ export const submitRegister = async (
         return { error: "Password doesn't match!", success: false };
     }
 
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/user/register`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email,
-                password,
-            }),
-        }
-    );
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/register`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+            email,
+            password,
+        }),
+    });
     const data = await res.json();
 
     if (!res.ok) {
@@ -38,6 +36,6 @@ export const submitRegister = async (
             user: null,
         };
     }
-  
-    return { error: "", success: true, user: data?.data };
+
+    return { error: "", success: true, user: data?.user };
 };

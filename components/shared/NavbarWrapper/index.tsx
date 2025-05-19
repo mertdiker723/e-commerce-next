@@ -26,7 +26,7 @@ const NavbarWrapper = () => {
             if (unShownPaths.includes(pathname)) return;
             if (!user && !wasLoggedOut) {
                 try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/login`, {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/getUser`, {
                         credentials: "include",
                         method: "GET",
                         headers: {
