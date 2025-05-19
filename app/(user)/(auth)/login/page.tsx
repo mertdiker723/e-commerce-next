@@ -35,7 +35,7 @@ const Login = () => {
         if (success && user) {
             dispatch(setUser(user));
             if (user.type === ADMIN) {
-                router.push("/admin/home");
+                router.push("/admin/home"); // Eğer adminse admin projesine login olacak urlden
                 return;
             }
             router.push("/");

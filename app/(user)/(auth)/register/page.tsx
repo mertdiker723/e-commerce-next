@@ -33,7 +33,7 @@ const Register = () => {
     useEffect(() => {
         if (success) {
             if (user.type === ADMIN) {
-                router.push("/admin/home");
+                router.push("/admin/home");  // Eğer adminse admin projesine login olacak urlden
                 return;
             }
             router.push("/");

@@ -5,12 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { usePathname } from "next/navigation";
 
 // Components
-import AdminNavbar from "@/components/admin/Navbar";
 import UserNavbar from "@/components/user/Navbar";
 
 // Libs
 import { RootState } from "@/lib/redux/store";
-import { ADMIN } from "@/lib/userTypes";
 import { setUser } from "@/lib/redux/slices/userSlice";
 
 // Core
@@ -51,7 +49,7 @@ const NavbarWrapper = () => {
 
     if (shouldHideNavbar) return null;
 
-    return user.type === ADMIN ? <AdminNavbar /> : <UserNavbar />;
+    return <UserNavbar />
 };
 
 export default NavbarWrapper;
