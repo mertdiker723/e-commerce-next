@@ -1,72 +1,67 @@
 "use client";
 
-// Libraries
 import { useActionState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-// Common
+// Components
 import Input from "@/common/Input/input";
 import Button from "@/common/Button";
 
-// Lib
-import { ADMIN } from "@/lib/userTypes";
-
-// Action
-import { loginUser } from "@/services/auth";
+// Services & Redux
+import { loginUser } from "@/services/auth.services";
 import { setUser, resetWasLoggedOut } from "@/lib/redux/slices/userSlice";
 
+// Types
+import type { LoginState } from "@/helpers/auth";
+
+const initialState: LoginState = {
+    error: "",
+    success: false,
+    user: null,
+};
+
 const Login = () => {
-    const [state, formAction, isPending] = useActionState(loginUser, {
-        error: "",
-        success: false,
-        user: null,
-    });
-
-    // Redux
+    const [state, formAction, isPending] = useActionState(loginUser, initialState);
     const dispatch = useDispatch();
-
     const router = useRouter();
-
     const { error, success, user } = state;
 
     useEffect(() => {
         if (success && user) {
             dispatch(setUser(user));
-            if (user.type === ADMIN) {
-                router.push("/admin/home");
-                return;
-            }
-            router.push("/");
             dispatch(resetWasLoggedOut());
+            router.push("/");
         }
-    }, [success, router, user, dispatch]);
+    }, [success, user, dispatch, router]);
 
     return (
-        <>
-            <form className="space-y-3" action={formAction}>
-                {error && (
-                    <div className="w-full">
-                        <p className="text-sm text-red-700 break-words">{error}</p>
-                    </div>
-                )}
+        <form className="space-y-3" action={formAction}>
+            {error && (
+                <div className="w-full">
+                    <p className="text-sm text-red-700 break-words">{error}</p>
+                </div>
+            )}
+
+            <div>
                 <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900 mb-2">
                     Email
                 </label>
                 <Input type="email" id="email" name="email" required placeholder="Email" />
+            </div>
+
+            <div>
                 <div className="flex items-center justify-between mb-2">
                     <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
                         Password
                     </label>
-                    <div className="text-sm">
-                        <Link
-                            href="/forgotPassword"
-                            className="font-semibold text-indigo-600 hover:text-indigo-500"
-                        >
-                            Forgot password?
-                        </Link>
-                    </div>
+                    <Link
+                        href="/forgotPassword"
+                        className="text-sm font-semibold text-indigo-600 hover:text-indigo-500"
+                    >
+                        Forgot password?
+                    </Link>
                 </div>
                 <Input
                     type="password"
@@ -75,14 +70,15 @@ const Login = () => {
                     required
                     placeholder="Password"
                 />
-                <Button
-                    type="submit"
-                    label="Sign in"
-                    customClassName="purple mt-4"
-                    isPending={isPending}
-                />
-            </form>
-        </>
+            </div>
+
+            <Button
+                type="submit"
+                label="Sign in"
+                customClassName="purple mt-4"
+                isPending={isPending}
+            />
+        </form>
     );
 };
 

@@ -7,14 +7,16 @@ import Image from "next/image";
 import Link from "next/link";
 
 // Actions
-import { submitLogout } from "./action";
+
 import Button from "@/common/Button";
 
 // Lib
 import { logout } from "@/lib/redux/slices/userSlice";
+import { logoutUser } from "@/services/auth.services";
+import { LOGIN } from "@/core/routeConstants";
 
 const UserNavbar = () => {
-    const [state, formAction, isPending] = useActionState(submitLogout, {
+    const [state, formAction, isPending] = useActionState(logoutUser, {
         error: "",
         success: false,
     });
@@ -31,7 +33,7 @@ const UserNavbar = () => {
     useEffect(() => {
         if (success) {
             dispatch(logout());
-            router.push("/login");
+            router.push(LOGIN);
         }
     }, [success, dispatch, router]);
 
