@@ -14,7 +14,7 @@ import { loginUser } from "@/services/auth.services";
 import { setUser, resetWasLoggedOut } from "@/lib/redux/slices/userSlice";
 
 // Types
-import type { LoginState } from "@/helpers/auth";
+import type { LoginState } from "@/utils/tokenUtils";
 
 const initialState: LoginState = {
     error: "",

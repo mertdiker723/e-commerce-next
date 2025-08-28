@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -26,9 +26,19 @@ const UserNavbar = () => {
 
     // Router
     const router = useRouter();
+    const pathname = usePathname();
 
     // State
     const { success } = state;
+
+    const isActive = (path: string) => pathname === path;
+
+    const getLinkClassName = (path: string) => {
+        const baseClasses = "rounded-md px-3 py-2 text-sm font-medium";
+        return isActive(path)
+            ? `${baseClasses} bg-gray-900 text-white`
+            : `${baseClasses} text-gray-300 hover:bg-gray-700 hover:text-white`;
+    };
 
     useEffect(() => {
         if (success) {
@@ -54,18 +64,12 @@ const UserNavbar = () => {
                         </div>
                         <div className="hidden sm:ml-6 sm:block">
                             <div className="flex space-x-4">
-                                <Link
-                                    href="/"
-                                    className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                                >
+                                <Link href="/" className={getLinkClassName("/")}>
                                     Home
                                 </Link>
-                                <a
-                                    href="#"
-                                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                                >
-                                    Team
-                                </a>
+                                <Link href="/product" className={getLinkClassName("/product")}>
+                                    Product
+                                </Link>
                             </div>
                         </div>
                         <div className="ml-auto flex items-center pr-2">

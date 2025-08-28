@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { setCookiesFromResponse, type LoginState } from "@/helpers/auth";
+import { setCookiesFromResponse, type LoginState } from "@/utils/tokenUtils";
 
 export const getUser = async (): Promise<LoginState> => {
     try {
@@ -165,13 +165,13 @@ export const logoutUser = async (): Promise<{ success: boolean; error: string }>
     try {
         const baseUrl = process.env.BACKEND_URL;
         const cookieStore = await cookies();
-        const token = cookieStore.get("token")?.value;
+        const allCookies = cookieStore.toString();
 
         const res = await fetch(`${baseUrl}/user/logout`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                ...(token && { Cookie: `token=${token}` }),
+                ...(allCookies && { Cookie: allCookies }),
             },
         });
 
