@@ -1,6 +1,5 @@
 // middleware.ts
 import { NextResponse, NextRequest } from "next/server";
-import { isTokenValidForDateAndId } from "@/utils/tokenUtils";
 
 const restrictedPathsForUsers = ["/", "/product"];
 
@@ -14,29 +13,8 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL("/", request.url));
     }
 
-    if (restrictedPathsForUsers.includes(pathname)) {
-        if (!token) {
-            return NextResponse.redirect(new URL("/login", request.url));
-        }
-
-        if (!(await isTokenValidForDateAndId(token))) {
-            try {
-                await fetch(`${process.env.BACKEND_URL}/user/logout`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Cookie: `token=${token}`,
-                    },
-                });
-                console.log("Token is not valid");
-            } catch (error) {
-                console.log("Logout failed:", error);
-            }
-
-            const response = NextResponse.redirect(new URL("/login", request.url));
-            response.cookies.delete("token");
-            return response;
-        }
+    if (!token && restrictedPathsForUsers.includes(pathname)) {
+        return NextResponse.redirect(new URL("/login", request.url));
     }
 
     return NextResponse.next();

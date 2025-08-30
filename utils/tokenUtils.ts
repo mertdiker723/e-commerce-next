@@ -2,7 +2,6 @@
 
 import { cookies } from "next/headers";
 import { parse } from "cookie";
-import { jwtVerify } from "jose";
 
 // Types
 export interface User {
@@ -96,24 +95,4 @@ const parseSetCookie = (setCookieString: string) => {
     });
 
     return { name, value: value || "", options };
-};
-
-export const isTokenValidForDateAndId = async (token: string): Promise<boolean> => {
-    try {
-        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-
-        if (!secret || process.env.JWT_SECRET?.length === 0) {
-            return false;
-        }
-
-        const { payload } = await jwtVerify(token, secret);
-
-        if (!payload.id || !payload.email || !payload.exp || !payload.iat) {
-            return false;
-        }
-
-        return true;
-    } catch {
-        return false;
-    }
 };
