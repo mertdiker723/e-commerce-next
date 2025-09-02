@@ -167,6 +167,7 @@ export const logoutUser = async (): Promise<{ success: boolean; error: string }>
         const cookieStore = await cookies();
         const allCookies = cookieStore.toString();
 
+
         const res = await fetch(`${baseUrl}/user/logout`, {
             method: "POST",
             headers: {
@@ -174,6 +175,8 @@ export const logoutUser = async (): Promise<{ success: boolean; error: string }>
                 ...(allCookies && { Cookie: allCookies }),
             },
         });
+
+
 
         if (!res.ok) {
             const data = await res.json();
@@ -191,6 +194,7 @@ export const logoutUser = async (): Promise<{ success: boolean; error: string }>
             error: "",
         };
     } catch (err) {
+        console.log("err", err);   
         return {
             success: false,
             error: err instanceof Error ? err.message : "Logout failed!",

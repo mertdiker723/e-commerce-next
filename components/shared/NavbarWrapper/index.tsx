@@ -38,10 +38,14 @@ const NavbarWrapper = () => {
                         dispatch(setUser(result.user));
                         return;
                     }
+
+                    // user apisi fail veridiğinde ne yapmalıyız? 
                     dispatch(resetWasLoggedOut());
                     dispatch(logout());
                     router.push(LOGIN);
-                } catch {}
+                } catch {
+                    console.log("getUser error");
+                }
             }
         })();
     }, [user, dispatch, pathname, wasLoggedOut, router]);

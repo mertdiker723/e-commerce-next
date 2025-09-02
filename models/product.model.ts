@@ -1,7 +1,7 @@
 // Models
 import { Brand } from "./brand.model";
 import { Category } from "./category.model";
-import { Retailer } from "./retailer.mode";
+import { Retailer } from "./retailer.model";
 
 export interface ProductResponse {
     message: string;
