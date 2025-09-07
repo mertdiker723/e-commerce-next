@@ -1,16 +1,13 @@
 "use client";
 
-import { Product } from "@/models/product.model";
-
-import { SecondColumn } from "./SecondColumn";
-import { FirstColumn } from "./FirstColumn";
-
-interface TableProps {
-    items: Product[];
+interface TableProps<T> {
+    items: T[];
     className?: string;
+    FirstColumn: React.ComponentType<{ item: T }>;
+    SecondColumn: React.ComponentType<{ item: T }>;
 }
 
-export const ProductTable = ({ items, className = "" }: TableProps) => {
+export const Table = <T,>({ items, className = "", FirstColumn, SecondColumn }: TableProps<T>) => {
     return (
         <div className={className}>
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -38,4 +35,4 @@ export const ProductTable = ({ items, className = "" }: TableProps) => {
     );
 };
 
-export default ProductTable;
+export default Table;

@@ -4,8 +4,12 @@ import { useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
 // Common
-import { ProductTable } from "@/common/ProductTable";
+import { Table } from "@/common/Table";
 import Filter from "@/common/Filter";
+
+// Components
+import { FirstColumn } from "@/components/product/table/FirstColumn";
+import { SecondColumn } from "@/components/product/table/SecondColumn";
 
 // Types
 import { Product } from "@/models/product.model";
@@ -131,7 +135,11 @@ const ProductPage = () => {
                 </div>
 
                 <div className="lg:flex-1">
-                    <ProductTable items={products} />
+                    <Table 
+                        items={products} 
+                        FirstColumn={FirstColumn}
+                        SecondColumn={SecondColumn}
+                    />
                 </div>
             </div>
         </div>
