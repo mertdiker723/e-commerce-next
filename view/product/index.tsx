@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 
 // Common
 import { ProductTable } from "@/common/ProductTable";
@@ -15,14 +16,22 @@ import { useMergeState } from "@/hooks/useMergeState";
 
 // Services
 import { ProductService } from "@/services/product.service";
+
+// Models
 import { Category } from "@/models/category.model";
 import { Brand } from "@/models/brand.model";
+import { Province } from "@/models/province.model";
+import { District } from "@/models/district.model";
+import { Neighborhood } from "@/models/neighborhood.model";
 
 type ProductState = {
     products: Product[];
     retailers: Retailer[];
     categories: Category[];
     brands: Brand[];
+    provinces: Province[];
+    districts: District[];
+    neighborhoods: Neighborhood[];
 };
 
 const ProductPage = () => {
@@ -31,29 +40,40 @@ const ProductPage = () => {
         retailers: [],
         categories: [],
         brands: [],
+        provinces: [],
+        districts: [],
+        neighborhoods: [],
     });
 
-    const { products = [], retailers = [], categories = [], brands = [] } = state || {};
+    const {
+        products,
+        retailers = [],
+        categories = [],
+        brands = [],
+        provinces = [],
+        districts = [],
+        neighborhoods = [],
+    } = state || {};
 
     const productService = useMemo(() => new ProductService(), []);
-    
+    const searchParams = useSearchParams();
+
     useEffect(() => {
         const loadAllData = async () => {
             try {
-                const [productsData, retailersData, categoriesData, brandsData] = await Promise.all(
-                    [
-                        await productService.getProducts(),
+                const [retailersData, categoriesData, brandsData, provincesData] =
+                    await Promise.all([
                         await productService.getRetailers(),
                         await productService.getCategories(),
                         await productService.getBrands(),
-                    ]
-                );
+                        await productService.getProvinces(),
+                    ]);
 
                 setState({
-                    products: productsData,
                     retailers: retailersData,
                     categories: categoriesData,
                     brands: brandsData,
+                    provinces: provincesData,
                 });
             } catch (error) {
                 console.error("Data loading error:", error);
@@ -63,6 +83,41 @@ const ProductPage = () => {
         loadAllData();
     }, [productService, setState]);
 
+    useEffect(() => {
+        (async () => {
+            const products = await productService.getProducts(searchParams);
+            setState({ products });
+        })();
+    }, [productService, searchParams, setState]);
+
+    const handleProvinceChange = async (provinceId: string | number) => {
+        if (provinceId) {
+            const districts = await productService.getDistricts(Number(provinceId));
+            setState({ ...state, districts, neighborhoods: [] });
+            return;
+        }
+        setState({ ...state, districts: [], neighborhoods: [] });
+    };
+
+    const handleDistrictChange = async (districtId: string | number) => {
+        if (districtId) {
+            const neighborhoods = await productService.getNeighborhoods(Number(districtId));
+            setState({ ...state, neighborhoods });
+            return;
+        }
+        setState({ ...state, neighborhoods: [] });
+    };
+
+    const filterValues = {
+        retailers: retailers,
+        categories: categories,
+        brands: brands,
+        provinces: provinces,
+        districts: districts,
+        neighborhoods: neighborhoods,
+        handleProvinceChange: handleProvinceChange,
+        handleDistrictChange: handleDistrictChange,
+    };
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="mb-8">
@@ -72,7 +127,7 @@ const ProductPage = () => {
 
             <div className="lg:flex lg:gap-6">
                 <div className="lg:w-64 lg:flex-shrink-0 mb-6 lg:mb-0">
-                    <Filter retailers={retailers} categories={categories} brands={brands} />
+                    <Filter filterName="product" filterValues={filterValues} />
                 </div>
 
                 <div className="lg:flex-1">

@@ -1,21 +1,40 @@
 import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/20/solid";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type SelectBoxProps = {
     label: string;
-    options: { label: string; value: string }[];
+    options: { label: string; value: string | number }[];
     placeholder?: string;
+    value?: string | number; // Dışarıdan value kabul et
+    onChange?: (value: string | number) => void;
+    onClearChange?: () => void;
 };
 
-const SelectBox = ({ label, options, placeholder }: SelectBoxProps) => {
+const SelectBox = ({
+    label,
+    options,
+    placeholder,
+    value,
+    onChange,
+    onClearChange,
+}: SelectBoxProps) => {
     const [selectedValue, setSelectedValue] = useState<string>("");
+
+    useEffect(() => {
+        if (!value) {
+            setSelectedValue(String(value));
+        }
+    }, [value]);
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedValue(e.target.value);
+        onChange?.(e.target.value as string | number);
     };
 
     const handleClearSelection = () => {
         setSelectedValue("");
+        onChange?.("");
+        onClearChange?.();
     };
 
     return (

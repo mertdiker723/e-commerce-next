@@ -3,13 +3,16 @@ import { ProductResponse, Product } from "../models/product.model";
 import { Retailer } from "../models/retailer.model";
 import { Brand } from "../models/brand.model";
 import { Category } from "../models/category.model";
+import { Province } from "@/models/province.model";
+import { District } from "@/models/district.model";
+import { Neighborhood } from "@/models/neighborhood.model";
 
 export class ProductService {
     // Get all products
-    async getProducts(): Promise<Product[]> {
+    async getProducts(searchParams: URLSearchParams): Promise<Product[]> {
         try {
             const res = await fetchApi<ProductResponse>(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/products`
+                `${process.env.NEXT_PUBLIC_BASE_URL}/products?${searchParams.toString()}`
             );
             return res.data;
         } catch (error) {
@@ -56,6 +59,42 @@ export class ProductService {
             return [];
         }
     }
+
+    async getProvinces(): Promise<Province[]> {
+        try {
+            const { data } = await fetchApi<{ data: Province[] }>(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/location/provinces`
+            );
+            return data;
+        } catch (error) {
+            console.error("Provinces fetch error:", error);
+            return [];
+        }
+    }
+
+    async getDistricts(provinceId: number): Promise<District[]> {
+        try {
+            const { data } = await fetchApi<{ data: District[] }>(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/location/districts/${provinceId}`
+            );
+            return data;
+        } catch (error) {
+            console.error("Districts fetch error:", error);
+            return [];
+        }
+    }
+
+    async getNeighborhoods(districtId: number): Promise<Neighborhood[]> {
+        try {
+            const { data } = await fetchApi<{ data: Neighborhood[] }>(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/location/neighborhoods/${districtId}`
+            );
+            return data;
+        } catch (error) {
+            console.error("Neighborhoods fetch error:", error);
+            return [];
+        }
+    }   
 }
 
 export const productService = new ProductService();
