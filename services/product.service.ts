@@ -9,15 +9,15 @@ import { Neighborhood } from "@/models/neighborhood.model";
 
 export class ProductService {
     // Get all products
-    async getProducts(searchParams: URLSearchParams): Promise<Product[]> {
+    async getProducts(searchParams: URLSearchParams): Promise<{ data: Product[]; error?: string }> {
         try {
             const res = await fetchApi<ProductResponse>(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/products?${searchParams.toString()}`
             );
-            return res.data;
+            return { data: res.data };
         } catch (error) {
-            console.error("Products fetch error:", error);
-            return [];
+            const errorMessage = error instanceof Error ? error.message : "Products fetch error";
+            return { data: [], error: errorMessage };
         }
     }
 
@@ -28,8 +28,7 @@ export class ProductService {
                 `${process.env.NEXT_PUBLIC_BASE_URL}/retailers`
             );
             return data;
-        } catch (error) {
-            console.error("Retailers fetch error:", error);
+        } catch {
             return [];
         }
     }
@@ -41,8 +40,7 @@ export class ProductService {
                 `${process.env.NEXT_PUBLIC_BASE_URL}/categories`
             );
             return data;
-        } catch (error) {
-            console.error("Categories fetch error:", error);
+        } catch {
             return [];
         }
     }
@@ -54,8 +52,7 @@ export class ProductService {
                 `${process.env.NEXT_PUBLIC_BASE_URL}/brands`
             );
             return data;
-        } catch (error) {
-            console.error("Brands fetch error:", error);
+        } catch {
             return [];
         }
     }
@@ -66,8 +63,7 @@ export class ProductService {
                 `${process.env.NEXT_PUBLIC_BASE_URL}/location/provinces`
             );
             return data;
-        } catch (error) {
-            console.error("Provinces fetch error:", error);
+        } catch {
             return [];
         }
     }
@@ -78,8 +74,7 @@ export class ProductService {
                 `${process.env.NEXT_PUBLIC_BASE_URL}/location/districts/${provinceId}`
             );
             return data;
-        } catch (error) {
-            console.error("Districts fetch error:", error);
+        } catch {
             return [];
         }
     }
@@ -90,11 +85,10 @@ export class ProductService {
                 `${process.env.NEXT_PUBLIC_BASE_URL}/location/neighborhoods/${districtId}`
             );
             return data;
-        } catch (error) {
-            console.error("Neighborhoods fetch error:", error);
+        } catch {
             return [];
         }
-    }   
+    }
 }
 
 export const productService = new ProductService();

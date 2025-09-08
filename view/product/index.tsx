@@ -36,6 +36,8 @@ type ProductState = {
     provinces: Province[];
     districts: District[];
     neighborhoods: Neighborhood[];
+    productLoader: boolean;
+    errorMessage: string | null;
 };
 
 const ProductPage = () => {
@@ -47,6 +49,8 @@ const ProductPage = () => {
         provinces: [],
         districts: [],
         neighborhoods: [],
+        productLoader: true,
+        errorMessage: null,
     });
 
     const {
@@ -57,6 +61,8 @@ const ProductPage = () => {
         provinces = [],
         districts = [],
         neighborhoods = [],
+        productLoader,
+        errorMessage,
     } = state || {};
 
     const productService = useMemo(() => new ProductService(), []);
@@ -89,8 +95,12 @@ const ProductPage = () => {
 
     useEffect(() => {
         (async () => {
-            const products = await productService.getProducts(searchParams);
-            setState({ products });
+            setState({ productLoader: true });
+            const result = await productService.getProducts(searchParams);
+            if (result.error) {
+                setState({ errorMessage: result.error });
+            }
+            setState({ products: result.data, productLoader: false });
         })();
     }, [productService, searchParams, setState]);
 
@@ -122,6 +132,7 @@ const ProductPage = () => {
         handleProvinceChange: handleProvinceChange,
         handleDistrictChange: handleDistrictChange,
     };
+    
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="mb-8">
@@ -135,8 +146,11 @@ const ProductPage = () => {
                 </div>
 
                 <div className="lg:flex-1">
-                    <Table 
-                        items={products} 
+                    <Table
+                        items={products}
+                        loading={productLoader}
+                        errorMessage={errorMessage}
+                        filteringItems={{ searchPlaceholder: "Search by product name" }}
                         FirstColumn={FirstColumn}
                         SecondColumn={SecondColumn}
                     />

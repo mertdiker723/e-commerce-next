@@ -2,7 +2,7 @@ import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { useState, useEffect } from "react";
 
 type SelectBoxProps = {
-    label: string;
+    label?: string;
     options: { label: string; value: string | number }[];
     placeholder?: string;
     value?: string | number; // Dışarıdan value kabul et

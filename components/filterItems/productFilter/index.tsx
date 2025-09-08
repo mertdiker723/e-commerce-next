@@ -1,16 +1,21 @@
 "use client";
 
-import Input from "@/common/Input/input";
-import SelectBox from "@/common/SelectBox";
-import { Retailer } from "@/models/retailer.model";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+
+// Common
+import SelectBox from "@/common/SelectBox";
+import Checkbox from "@/common/Checkbox";
+
+// Models
+import { Retailer } from "@/models/retailer.model";
 import { Category } from "@/models/category.model";
 import { Brand } from "@/models/brand.model";
 import { Province } from "@/models/province.model";
 import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
-import Checkbox from "@/common/Checkbox";
+
+// Hooks
 import { useMergeState } from "@/hooks/useMergeState";
 
 type ProductFilterState = {
@@ -66,10 +71,6 @@ const ProductFilter = ({
 
     return (
         <>
-            <div className="mb-3 lg:mb-4">
-                <Input label="Search" placeholder="Search" type="text" id="search" name="search" />
-            </div>
-
             <div className="mb-3 lg:mb-4">
                 <SelectBox
                     label="Retailers"

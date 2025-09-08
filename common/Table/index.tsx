@@ -1,18 +1,37 @@
 "use client";
 
+import Sorting from "./filtering/SortingTable";
+import SkeletonRow from "../skeleton/tableSkeleton";
+
 interface TableProps<T> {
     items: T[];
     className?: string;
     FirstColumn: React.ComponentType<{ item: T }>;
     SecondColumn: React.ComponentType<{ item: T }>;
+    filteringItems?: {
+        searchPlaceholder?: string;
+    };
+    loading?: boolean;
+    errorMessage?: string | null;
 }
 
-export const Table = <T,>({ items, className = "", FirstColumn, SecondColumn }: TableProps<T>) => {
+export const Table = <T,>({
+    items,
+    className = "",
+    FirstColumn,
+    SecondColumn,
+    filteringItems,
+    loading = false,
+    errorMessage = null,
+}: TableProps<T>) => {
     return (
         <div className={className}>
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="divide-y divide-gray-100">
-                    {items && items.length > 0 ? (
+                    <Sorting filteringItems={filteringItems} />
+                    {loading ? (
+                        <SkeletonRow rowCount={10} />
+                    ) : items && items.length > 0 ? (
                         items.map((item, index) => {
                             return (
                                 <div key={index}>
@@ -26,7 +45,7 @@ export const Table = <T,>({ items, className = "", FirstColumn, SecondColumn }: 
                     ) : (
                         <div className="p-8 text-center text-gray-500">
                             <p className="text-lg">No items found</p>
-                            <p className="text-sm">Try adjusting your search criteria</p>
+                            <p className="text-sm">{errorMessage || "Try adjusting your search criteria"}</p>
                         </div>
                     )}
                 </div>

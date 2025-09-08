@@ -11,6 +11,8 @@ type InputProps = {
     required?: boolean;
     placeholder?: string;
     label?: string;
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const Input = ({
@@ -21,6 +23,8 @@ const Input = ({
     required = false,
     placeholder,
     label,
+    value,
+    onChange,
 }: InputProps) => {
     return (
         <>
@@ -28,16 +32,26 @@ const Input = ({
                 <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-2">
                     {label}
                 </label>
-            )}  
+            )}
             <input
                 type={type}
                 id={id}
                 name={name}
                 required={required}
-                className={`block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 outline-offset-[-1px] focus:outline-2 focus:outline-indigo-600 focus:outline-offset-[-2px] placeholder:text-gray-400 ${
-                    customClassName || ""
-                }`}
+                className={`block
+                  w-full rounded-md
+                bg-white 
+                  px-3 
+                  py-1.5
+                  text-base
+                text-gray-900 
+                  outline-1
+                outline-gray-300 outline-offset-[-1px] focus:outline-2 focus:outline-indigo-600 focus:outline-offset-[-2px] placeholder:text-gray-400 placeholder:text-sm ${
+                          customClassName || ""
+                      }`}
                 placeholder={placeholder}
+                value={value}
+                onChange={onChange}
             />
         </>
     );
