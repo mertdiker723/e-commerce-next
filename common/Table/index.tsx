@@ -2,6 +2,7 @@
 
 import Sorting from "./filtering/SortingTable";
 import SkeletonRow from "../skeleton/tableSkeleton";
+import Pagination from "../Pagination";
 
 interface TableProps<T> {
     items: T[];
@@ -45,9 +46,12 @@ export const Table = <T,>({
                     ) : (
                         <div className="p-8 text-center text-gray-500">
                             <p className="text-lg">No items found</p>
-                            <p className="text-sm">{errorMessage || "Try adjusting your search criteria"}</p>
+                            <p className="text-sm">
+                                {errorMessage || "Try adjusting your search criteria"}
+                            </p>
                         </div>
                     )}
+                    <Pagination />
                 </div>
             </div>
         </div>
