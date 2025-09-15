@@ -6,7 +6,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 // Icons
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
+// Components
 import ProductFilter from "@/components/filterItems/productFilter";
+import Button from "../Button";
 
 const Filter = ({
     filterName,
@@ -30,6 +32,11 @@ const Filter = ({
             }
         }
 
+        router.replace(`?${params.toString()}`);
+    };
+
+    const clearFilters = () => {
+        const params = new URLSearchParams();
         router.replace(`?${params.toString()}`);
     };
 
@@ -62,9 +69,13 @@ const Filter = ({
             >
                 <div className="p-4 lg:p-6 lg:pt-0">
                     {filterItems[filterName as keyof typeof filterItems] || null}
-                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 lg:py-3 px-4 rounded-lg transition-colors">
-                        Apply Filters
-                    </button>
+                    {searchParams.toString() && (
+                        <Button
+                            customClassName="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 lg:py-3 px-4 rounded-lg transition-colors"
+                            label="Clear Filters"
+                            onClick={clearFilters}
+                        />
+                    )}
                 </div>
             </div>
         </div>

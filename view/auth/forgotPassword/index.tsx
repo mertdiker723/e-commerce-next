@@ -21,7 +21,7 @@ const ForgotPassword = () => {
           required
           placeholder="Email"
         />
-        <Button type="submit" label="Send" customClassName="purple mt-4" />
+        <Button type="submit" label="Send" customClassName="button__item purple mt-4" />
       </form>
     </>
   );

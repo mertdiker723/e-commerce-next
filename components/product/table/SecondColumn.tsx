@@ -1,18 +1,19 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
+import Button from "@/common/Button";
 import { Product } from "@/models/product.model";
 
-
-
-export const SecondColumn = ({ item }: {item: Product}) => {
+export const SecondColumn = ({ item }: { item: Product }) => {
     const { price, stock, createdAt } = item;
+    const router = useRouter();
 
     return (
         <div className="sm:flex sm:flex-col sm:items-center sm:text-center space-y-4 min-w-[140px]">
             <div className="flex flex-col">
                 <span className="font-bold text-green-600 text-3xl">{price.toLocaleString()}₺</span>
             </div>
-
             <div className="flex flex-col space-y-4">
                 <div className="flex flex-col">
                     <span
@@ -39,10 +40,11 @@ export const SecondColumn = ({ item }: {item: Product}) => {
                     </span>
                 </div>
             </div>
-
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md">
-                View Details
-            </button>
+            <Button
+                onClick={() => router.push(`/product/${item._id}`)}
+                customClassName="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md cursor-pointer"
+                label="View Details"
+            />
         </div>
     );
 };

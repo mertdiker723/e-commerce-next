@@ -56,7 +56,7 @@ const Register = () => {
                 <Button
                     type="submit"
                     label="Register"
-                    customClassName="purple mt-4"
+                    customClassName="button__item purple mt-4"
                     isPending={isPending}
                 />
             </form>

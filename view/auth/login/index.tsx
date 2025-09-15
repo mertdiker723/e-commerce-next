@@ -75,7 +75,7 @@ const Login = () => {
             <Button
                 type="submit"
                 label="Sign in"
-                customClassName="purple mt-4"
+                customClassName="button__item purple mt-4"
                 isPending={isPending}
             />
         </form>

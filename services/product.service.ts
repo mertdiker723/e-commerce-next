@@ -1,4 +1,6 @@
 import { fetchApi } from "../utils/fetchUtils";
+
+// Models
 import { ProductResponse, Product } from "../models/product.model";
 import { Retailer } from "../models/retailer.model";
 import { Brand } from "../models/brand.model";
@@ -8,6 +10,7 @@ import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
 
 export class ProductService {
+
     // Get all products
     async getProducts(
         searchParams: URLSearchParams
@@ -59,6 +62,7 @@ export class ProductService {
         }
     }
 
+    // Get all provinces
     async getProvinces(): Promise<Province[]> {
         try {
             const { data } = await fetchApi<{ data: Province[] }>(
@@ -70,6 +74,7 @@ export class ProductService {
         }
     }
 
+    // Get all districts
     async getDistricts(provinceId: number): Promise<District[]> {
         try {
             const { data } = await fetchApi<{ data: District[] }>(
@@ -81,6 +86,7 @@ export class ProductService {
         }
     }
 
+    // Get all neighborhoods
     async getNeighborhoods(districtId: number): Promise<Neighborhood[]> {
         try {
             const { data } = await fetchApi<{ data: Neighborhood[] }>(

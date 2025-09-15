@@ -1,8 +1,11 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
+// Common
 import Input from "@/common/Input/input";
 import SelectBox from "@/common/SelectBox";
-import { useRouter, useSearchParams } from "next/navigation";
+
+// Helpers
 import { debounce } from "@/helpers/helperMethods";
 
 const sortOptions: { label: string; value: string }[] = [
@@ -20,9 +23,14 @@ type SortingProps = {
 
 const Sorting = ({ filteringItems }: SortingProps) => {
     const searchParams = useSearchParams();
-    const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
+    const [searchValue, setSearchValue] = useState("");
 
     const router = useRouter();
+
+    useEffect(() => {
+        const urlSearchValue = searchParams.get("search") || "";
+        setSearchValue(urlSearchValue);
+    }, [searchParams]);
 
     const handleFilter = useCallback(
         (filters: { sort?: string; search?: string }) => {

@@ -74,7 +74,7 @@ const ProductPage = () => {
     const searchParams = useSearchParams();
 
     useEffect(() => {
-        const loadAllData = async () => {
+        (async () => {
             try {
                 const [retailersData, categoriesData, brandsData, provincesData] =
                     await Promise.all([
@@ -93,9 +93,7 @@ const ProductPage = () => {
             } catch (error) {
                 console.error("Data loading error:", error);
             }
-        };
-
-        loadAllData();
+        })();
     }, [setState]);
 
     useEffect(() => {
@@ -105,8 +103,6 @@ const ProductPage = () => {
             if (result.error) {
                 setState({ errorMessage: result.error });
             }
-
-            console.log(result);
 
             setState({
                 products: result.data,

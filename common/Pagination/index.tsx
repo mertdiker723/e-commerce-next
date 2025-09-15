@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { generatePageNumbers } from "@/helpers/helperMethods";
+import Button from "../Button";
 
 interface PaginationProps {
     totalPages: number;
@@ -110,13 +111,12 @@ const Pagination: React.FC<PaginationProps> = ({
                         aria-label="Pagination"
                         className="isolate inline-flex -space-x-px rounded-lg shadow-sm"
                     >
-                        <button
+                        <Button
                             onClick={handlePrevious}
                             disabled={currentPage === 1 || loading}
-                            className="relative inline-flex items-center rounded-l-lg px-3 py-2 text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700 focus:z-20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                        >
-                            <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
-                        </button>
+                            customClassName="relative inline-flex items-center cursor-pointer rounded-l-lg px-3 py-2 text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700 focus:z-20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                            icon={<ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />}
+                        />
 
                         {pageNumbers.map((pageNumber, index) => {
                             if (pageNumber === "...") {
@@ -132,29 +132,26 @@ const Pagination: React.FC<PaginationProps> = ({
 
                             const isCurrentPage = pageNumber === currentPage;
                             return (
-                                <button
+                                <Button
                                     key={pageNumber}
                                     onClick={() => handlePageClick(pageNumber as number)}
                                     disabled={loading}
-                                    aria-current={isCurrentPage ? "page" : undefined}
-                                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium border transition-all duration-200 disabled:cursor-not-allowed focus:z-20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                    customClassName={`relative inline-flex items-center cursor-pointer px-4 py-2 text-sm font-medium border transition-all duration-200 disabled:cursor-not-allowed focus:z-20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                                         isCurrentPage
                                             ? "z-10 bg-blue-600 text-white border-blue-600 shadow-sm"
                                             : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-400"
                                     }`}
-                                >
-                                    {pageNumber}
-                                </button>
+                                    label={pageNumber.toString()}
+                                />
                             );
                         })}
 
-                        <button
+                        <Button
                             onClick={handleNext}
                             disabled={currentPage === totalPages || loading}
-                            className="relative inline-flex items-center rounded-r-lg px-3 py-2 text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700 focus:z-20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                        >
-                            <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
-                        </button>
+                            customClassName="relative inline-flex items-center cursor-pointer rounded-r-lg px-3 py-2 text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700 focus:z-20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                            icon={<ChevronRightIcon className="h-5 w-5" aria-hidden="true" />}
+                        />
                     </nav>
                 </div>
             </div>
