@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 // Common
@@ -19,7 +19,7 @@ import { Retailer } from "@/models/retailer.model";
 import { useMergeState } from "@/hooks/useMergeState";
 
 // Services
-import { ProductService } from "@/services/product.service";
+import { productService } from "@/services/product.service";
 
 // Models
 import { Category } from "@/models/category.model";
@@ -38,6 +38,8 @@ type ProductState = {
     neighborhoods: Neighborhood[];
     productLoader: boolean;
     errorMessage: string | null;
+    totalCount: number;
+    totalPages: number;
 };
 
 const ProductPage = () => {
@@ -51,6 +53,8 @@ const ProductPage = () => {
         neighborhoods: [],
         productLoader: true,
         errorMessage: null,
+        totalCount: 0,
+        totalPages: 0,
     });
 
     const {
@@ -63,9 +67,10 @@ const ProductPage = () => {
         neighborhoods = [],
         productLoader,
         errorMessage,
+        totalCount,
+        totalPages,
     } = state || {};
 
-    const productService = useMemo(() => new ProductService(), []);
     const searchParams = useSearchParams();
 
     useEffect(() => {
@@ -91,7 +96,7 @@ const ProductPage = () => {
         };
 
         loadAllData();
-    }, [productService, setState]);
+    }, [setState]);
 
     useEffect(() => {
         (async () => {
@@ -100,26 +105,53 @@ const ProductPage = () => {
             if (result.error) {
                 setState({ errorMessage: result.error });
             }
-            setState({ products: result.data, productLoader: false });
-        })();
-    }, [productService, searchParams, setState]);
 
+            console.log(result);
+
+            setState({
+                products: result.data,
+                productLoader: false,
+                totalCount: result.totalCount,
+                totalPages: result.totalPages,
+            });
+        })();
+    }, [searchParams, setState]);
+
+    useEffect(() => {
+        (async () => {
+            const provinceId = searchParams?.get("province");
+            const districtId = searchParams?.get("district");
+
+            if (provinceId) {
+                const districts = await productService.getDistricts(Number(provinceId));
+                setState({ districts, neighborhoods: [] });
+
+                if (districtId) {
+                    const neighborhoods = await productService.getNeighborhoods(Number(districtId));
+                    setState({ neighborhoods });
+                }
+            }
+        })();
+    }, [searchParams, setState]);
+
+    // get districts
     const handleProvinceChange = async (provinceId: string | number) => {
         if (provinceId) {
             const districts = await productService.getDistricts(Number(provinceId));
-            setState({ ...state, districts, neighborhoods: [] });
+            setState({ districts, neighborhoods: [] });
             return;
         }
-        setState({ ...state, districts: [], neighborhoods: [] });
+        setState({ districts: [], neighborhoods: [] });
     };
 
+    // get neighborhoods
     const handleDistrictChange = async (districtId: string | number) => {
         if (districtId) {
             const neighborhoods = await productService.getNeighborhoods(Number(districtId));
-            setState({ ...state, neighborhoods });
+            setState({ neighborhoods });
             return;
         }
-        setState({ ...state, neighborhoods: [] });
+        setState({ neighborhoods: [] });
     };
 
     const filterValues = {
@@ -132,7 +164,7 @@ const ProductPage = () => {
         handleProvinceChange: handleProvinceChange,
         handleDistrictChange: handleDistrictChange,
     };
-    
+
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="mb-8">
@@ -153,6 +185,8 @@ const ProductPage = () => {
                         filteringItems={{ searchPlaceholder: "Search by product name" }}
                         FirstColumn={FirstColumn}
                         SecondColumn={SecondColumn}
+                        totalCount={totalCount}
+                        totalPages={totalPages}
                     />
                 </div>
             </div>

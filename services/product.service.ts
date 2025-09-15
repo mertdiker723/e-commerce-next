@@ -9,15 +9,17 @@ import { Neighborhood } from "@/models/neighborhood.model";
 
 export class ProductService {
     // Get all products
-    async getProducts(searchParams: URLSearchParams): Promise<{ data: Product[]; error?: string }> {
+    async getProducts(
+        searchParams: URLSearchParams
+    ): Promise<{ data: Product[]; error?: string; totalCount: number; totalPages: number }> {
         try {
             const res = await fetchApi<ProductResponse>(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/products?${searchParams.toString()}`
             );
-            return { data: res.data };
+            return { data: res.data, totalCount: res.totalCount, totalPages: res.totalPages };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Products fetch error";
-            return { data: [], error: errorMessage };
+            return { data: [], error: errorMessage, totalCount: 0, totalPages: 0 };
         }
     }
 

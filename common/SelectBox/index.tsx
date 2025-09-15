@@ -5,9 +5,10 @@ type SelectBoxProps = {
     label?: string;
     options: { label: string; value: string | number }[];
     placeholder?: string;
-    value?: string | number; // Dışarıdan value kabul et
+    value?: string | number;
     onChange?: (value: string | number) => void;
     onClearChange?: () => void;
+    loading?: boolean;
 };
 
 const SelectBox = ({
@@ -17,13 +18,12 @@ const SelectBox = ({
     value,
     onChange,
     onClearChange,
+    loading = false,
 }: SelectBoxProps) => {
-    const [selectedValue, setSelectedValue] = useState<string>("");
+    const [selectedValue, setSelectedValue] = useState<string>(value ? String(value) : "");
 
     useEffect(() => {
-        if (!value) {
-            setSelectedValue(String(value));
-        }
+        setSelectedValue(value ? String(value) : "");
     }, [value]);
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -49,11 +49,14 @@ const SelectBox = ({
                     id="selectBox"
                     value={selectedValue}
                     onChange={handleSelectChange}
-                    className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg 
+                    disabled={loading}
+                    className={`bg-white border border-gray-300 text-gray-900 text-sm rounded-lg 
                      focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 
                      appearance-none dark:bg-white dark:border-gray-600 
                      dark:placeholder-gray-400 dark:text-gray-900 
-                     dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                     dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
+                         loading ? 'opacity-50 cursor-not-allowed' : ''
+                     }`}
                 >
                     <option value="" disabled>
                         {placeholder || label}
@@ -65,9 +68,15 @@ const SelectBox = ({
                     ))}
                 </select>
 
-                <ChevronDownIcon className="w-5 h-5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                {loading ? (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-blue-500"></div>
+                    </div>
+                ) : (
+                    <ChevronDownIcon className="w-5 h-5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                )}
 
-                {selectedValue && (
+                {selectedValue && !loading && (
                     <button
                         onClick={handleClearSelection}
                         className="absolute right-8 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"

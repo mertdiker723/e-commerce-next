@@ -14,6 +14,10 @@ interface TableProps<T> {
     };
     loading?: boolean;
     errorMessage?: string | null;
+    totalCount: number;
+    totalPages: number;
+    itemsPerPage?: number;
+    pageParam?: string;
 }
 
 export const Table = <T,>({
@@ -24,6 +28,10 @@ export const Table = <T,>({
     filteringItems,
     loading = false,
     errorMessage = null,
+    totalCount,
+    totalPages,
+    itemsPerPage = 5,
+    pageParam = "page",
 }: TableProps<T>) => {
     return (
         <div className={className}>
@@ -51,7 +59,13 @@ export const Table = <T,>({
                             </p>
                         </div>
                     )}
-                    <Pagination />
+                    <Pagination
+                        totalItems={totalCount}
+                        totalPages={totalPages}
+                        itemsPerPage={itemsPerPage}
+                        loading={loading}
+                        pageParam={pageParam}
+                    />
                 </div>
             </div>
         </div>
