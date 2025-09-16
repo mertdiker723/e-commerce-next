@@ -33,22 +33,12 @@ const ProductFilter = ({
         provinces: Province[];
         districts: District[];
         neighborhoods: Neighborhood[];
-        handleProvinceChange?: (value: string | number) => void;
-        handleDistrictChange?: (value: string | number) => void;
         handleFilter?: (entries: Record<string, string | null>) => void;
     };
     handleFilter: (entries: Record<string, string | null>) => void;
 }) => {
-    const {
-        retailers,
-        categories,
-        brands,
-        provinces,
-        districts,
-        neighborhoods,
-        handleProvinceChange = () => {},
-        handleDistrictChange = () => {},
-    } = filterValues || {};
+    const { retailers, categories, brands, provinces, districts, neighborhoods } =
+        filterValues || {};
 
     const [state, setState] = useMergeState<ProductFilterState>({
         stockStatus: "",
@@ -125,7 +115,6 @@ const ProductFilter = ({
                             district: null,
                             neighborhood: null,
                         });
-                        handleProvinceChange(value as number);
                     }}
                     onClearChange={() => {
                         handleFilter({
@@ -151,7 +140,6 @@ const ProductFilter = ({
                             district: value as string,
                             neighborhood: null,
                         });
-                        handleDistrictChange(value as number);
                     }}
                     onClearChange={() => {
                         handleFilter({

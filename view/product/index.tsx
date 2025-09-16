@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
 // Common
@@ -73,6 +73,9 @@ const ProductPage = () => {
 
     const searchParams = useSearchParams();
 
+    const provinceId = useMemo(() => searchParams?.get("province"), [searchParams]);
+    const districtId = useMemo(() => searchParams?.get("district"), [searchParams]);
+
     useEffect(() => {
         (async () => {
             try {
@@ -115,50 +118,33 @@ const ProductPage = () => {
 
     useEffect(() => {
         (async () => {
-            const provinceId = searchParams?.get("province");
-            const districtId = searchParams?.get("district");
-
             if (provinceId) {
                 const districts = await productService.getDistricts(Number(provinceId));
                 setState({ districts, neighborhoods: [] });
-
-                if (districtId) {
-                    const neighborhoods = await productService.getNeighborhoods(Number(districtId));
-                    setState({ neighborhoods });
-                }
+            } else {
+                setState({ districts: [], neighborhoods: [] });
             }
         })();
-    }, [searchParams, setState]);
+    }, [provinceId, setState]);
 
-    // get districts
-    const handleProvinceChange = async (provinceId: string | number) => {
-        if (provinceId) {
-            const districts = await productService.getDistricts(Number(provinceId));
-            setState({ districts, neighborhoods: [] });
-            return;
-        }
-        setState({ districts: [], neighborhoods: [] });
-    };
-
-    // get neighborhoods
-    const handleDistrictChange = async (districtId: string | number) => {
-        if (districtId) {
-            const neighborhoods = await productService.getNeighborhoods(Number(districtId));
-            setState({ neighborhoods });
-            return;
-        }
-        setState({ neighborhoods: [] });
-    };
+    useEffect(() => {
+        (async () => {
+            if (districtId && provinceId) {
+                const neighborhoods = await productService.getNeighborhoods(Number(districtId));
+                setState({ neighborhoods });
+            } else {
+                setState({ neighborhoods: [] });
+            }
+        })();
+    }, [districtId, provinceId, setState]);
 
     const filterValues = {
-        retailers: retailers,
-        categories: categories,
-        brands: brands,
-        provinces: provinces,
-        districts: districts,
-        neighborhoods: neighborhoods,
-        handleProvinceChange: handleProvinceChange,
-        handleDistrictChange: handleDistrictChange,
+        retailers,
+        categories,
+        brands,
+        provinces,
+        districts,
+        neighborhoods,
     };
 
     return (
