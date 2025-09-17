@@ -8,8 +8,8 @@ import { Table } from "@/common/Table";
 import Filter from "@/common/Filter";
 
 // Components
-import { FirstColumn } from "@/components/product/table/FirstColumn";
-import { SecondColumn } from "@/components/product/table/SecondColumn";
+import { FirstColumn } from "@/components/product/listing/FirstColumn";
+import { SecondColumn } from "@/components/product/listing/SecondColumn";
 
 // Types
 import { Product } from "@/models/product.model";

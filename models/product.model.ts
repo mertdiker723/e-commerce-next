@@ -15,7 +15,7 @@ export interface Product {
     image?: Image | null;
     _id: string;
     name: string;
-    description?: string | null;
+    description: string | null;
     price: number;
     stock: number;
     category: Category;

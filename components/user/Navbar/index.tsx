@@ -73,9 +73,9 @@ const UserNavbar = () => {
                             </div>
                         </div>
                         <div className="ml-auto flex items-center pr-2">
-                            <button className="rounded-md cursor-pointer px-3 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                                Cart
-                            </button>
+                            <Link href="/favorites" className={getLinkClassName("/favorites")}>
+                                My Favorites
+                            </Link>
                             <form action={formAction}>
                                 <Button
                                     type="submit"
