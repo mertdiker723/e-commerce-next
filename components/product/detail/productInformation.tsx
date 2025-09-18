@@ -1,5 +1,12 @@
 import { HeartIcon } from "@heroicons/react/24/outline";
 
+// Common
+import Button from "@/common/Button";
+
+// Services
+import { favoriteService } from "@/services/favorite.service";
+import { useMergeState } from "@/hooks/useMergeState";
+
 type ProductInformationProps = {
     status: boolean;
     name: string;
@@ -9,6 +16,7 @@ type ProductInformationProps = {
     description: string | null;
     price: number;
     stock: number;
+    productId: string;
 };
 
 const ProductInformation = ({
@@ -20,7 +28,18 @@ const ProductInformation = ({
     description,
     price,
     stock,
+    productId,
 }: ProductInformationProps) => {
+    const [state, setState] = useMergeState({
+        message: null as string | null,
+    });
+
+    const { message } = state || {};
+
+    const handleAddFavorite = async () => {
+        const { message } = await favoriteService.addFavorite(productId);
+        setState({ message: message });
+    };
     return (
         <>
             <span
@@ -68,12 +87,16 @@ const ProductInformation = ({
                         Price: ₺{price?.toLocaleString("tr-TR") || "0"}
                     </span>
 
-                    <div className="flex space-x-3">
-                        <button className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                            <HeartIcon className="w-6 h-6 text-gray-600" />
-                        </button>
+                    <div className="flex items-center space-x-3">
+                        <div className="text-sm text-gray-600">Add Favorite:</div>
+                        <Button
+                            customClassName="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100 active:scale-95 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-all duration-150 transform"
+                            icon={<HeartIcon className="w-6 h-6 text-gray-600 transition-colors" />}
+                            onClick={handleAddFavorite}
+                        />
                     </div>
                 </div>
+                {message && <div className="flex justify-end text-blue-600">{message}</div>}
             </div>
 
             <div className="flex items-center space-x-2">

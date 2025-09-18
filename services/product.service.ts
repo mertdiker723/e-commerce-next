@@ -15,8 +15,9 @@ export class ProductService {
         searchParams: URLSearchParams
     ): Promise<{ data: Product[]; error?: string; totalCount: number; totalPages: number }> {
         try {
+            const queryString = searchParams.toString();
             const res = await fetchApi<ProductResponse>(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/products?${searchParams.toString()}`
+                `${process.env.NEXT_PUBLIC_BASE_URL}/products${queryString ? `?${queryString}` : ''}`
             );
             return { data: res.data, totalCount: res.totalCount, totalPages: res.totalPages };
         } catch (error) {

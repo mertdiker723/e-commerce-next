@@ -9,6 +9,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 // Components
 import ProductFilter from "@/components/filterItems/productFilter";
 import Button from "../Button";
+import FavoriteFilter from "@/components/filterItems/favoriteFilter";
 
 const Filter = ({
     filterName,
@@ -42,6 +43,7 @@ const Filter = ({
 
     const filterItems = {
         product: <ProductFilter filterValues={filterValues} handleFilter={handleFilter} />,
+        favorite: <FavoriteFilter filterValues={[]} handleFilter={handleFilter} />,
     };
 
     return (

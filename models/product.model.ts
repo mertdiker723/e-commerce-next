@@ -3,14 +3,6 @@ import { Brand } from "./brand.model";
 import { Category } from "./category.model";
 import { Retailer } from "./retailer.model";
 
-export interface ProductResponse {
-    message: string;
-    status: boolean;
-    data: Product[];
-    totalCount: number;
-    totalPages: number;
-}
-
 export interface Product {
     image?: Image | null;
     _id: string;
@@ -33,4 +25,12 @@ export interface Image {
     name: string;
     size: number;
     filePath: string;
+}
+
+export interface ProductResponse {
+    message: string;
+    status: boolean;
+    data: Product[];
+    totalCount: number;
+    totalPages: number;
 }

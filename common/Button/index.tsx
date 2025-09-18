@@ -25,7 +25,7 @@ const Button = ({
     return (
         <button
             type={type}
-            className={`${customClassName}`}
+            className={`cursor-pointer ${customClassName}`}
             disabled={disabled || isPending}
             onClick={onClick}
         >

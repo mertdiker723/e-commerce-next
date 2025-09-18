@@ -1,11 +1,7 @@
 import ProductPage from "@/view/product";
 
 const Product = () => {
-    return (
-        <div>
-            <ProductPage />
-        </div>
-    );
+    return <ProductPage />;
 };
 
 export default Product;

@@ -51,6 +51,7 @@ const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
         brand,
         category,
         createdBy,
+        _id,
     } = product || {};
 
     const { url } = image || {};
@@ -108,6 +109,7 @@ const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
                         ) : (
                             <>
                                 <ProductInformation
+                                    productId={_id}
                                     status={status}
                                     name={name}
                                     updatedAt={updatedAt}

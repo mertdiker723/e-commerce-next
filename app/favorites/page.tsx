@@ -1,7 +1,7 @@
-
+import FavoritePage from "@/view/favorite";
 
 const Favorites = () => {
-    return <div>Favorites</div>;
+    return <FavoritePage />;
 };
 
-export default Favorites
+export default Favorites;

@@ -35,7 +35,8 @@ export const fetchApi = async <T = unknown>(
             store.dispatch(resetWasLoggedOut());
         }
 
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
 
     return response.json();
