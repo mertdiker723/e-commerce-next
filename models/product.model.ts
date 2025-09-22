@@ -28,9 +28,16 @@ export interface Image {
 }
 
 export interface ProductResponse {
-    message: string;
+    message?: string;
     status: boolean;
     data: Product[];
     totalCount: number;
     totalPages: number;
+}
+
+export interface ProductByIdResponse {
+    data: Product | null;
+    isFavorited: boolean;
+    status: boolean;
+    message: string | null;
 }

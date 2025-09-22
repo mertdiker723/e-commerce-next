@@ -107,8 +107,8 @@ const ProductPage = () => {
         (async () => {
             setState({ productLoader: true });
             const result = await productService.getProducts(searchParams);
-            if (result.error) {
-                setState({ errorMessage: result.error, productLoader: false });
+            if (!result.status) {
+                setState({ errorMessage: result.message, productLoader: false });
                 return;
             }
 

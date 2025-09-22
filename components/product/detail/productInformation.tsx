@@ -17,6 +17,7 @@ type ProductInformationProps = {
     price: number;
     stock: number;
     productId: string;
+    isFavorited: boolean;
 };
 
 const ProductInformation = ({
@@ -29,15 +30,22 @@ const ProductInformation = ({
     price,
     stock,
     productId,
+    isFavorited,
 }: ProductInformationProps) => {
     const [state, setState] = useMergeState({
         message: null as string | null,
+        isFavorited: isFavorited,
     });
+
+    const { isFavorited: isFavoritedState } = state || {};
 
     const { message } = state || {};
 
     const handleAddFavorite = async () => {
-        const { message } = await favoriteService.addFavorite(productId);
+        const { message, success } = await favoriteService.addFavorite(productId);
+        if (success) {
+            setState({ isFavorited: true });
+        }
         setState({ message: message });
     };
     return (
@@ -90,9 +98,20 @@ const ProductInformation = ({
                     <div className="flex items-center space-x-3">
                         <div className="text-sm text-gray-600">Add Favorite:</div>
                         <Button
-                            customClassName="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100 active:scale-95 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-all duration-150 transform"
-                            icon={<HeartIcon className="w-6 h-6 text-gray-600 transition-colors" />}
+                            customClassName={`p-3 border rounded-lg transition-all duration-150 ${
+                                isFavoritedState
+                                    ? "border-gray-300 bg-gray-100 cursor-not-allowed opacity-75"
+                                    : "border-blue-300 bg-blue-50 hover:bg-blue-100 hover:border-blue-400 active:bg-blue-200 active:scale-95 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transform"
+                            }`}
+                            icon={
+                                <HeartIcon
+                                    className={`w-6 h-6 transition-colors ${
+                                        isFavoritedState ? "text-gray-500" : "text-blue-600"
+                                    }`}
+                                />
+                            }
                             onClick={handleAddFavorite}
+                            disabled={isFavoritedState}
                         />
                     </div>
                 </div>

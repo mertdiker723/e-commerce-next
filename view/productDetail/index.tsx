@@ -29,6 +29,7 @@ type ProductDetailState = {
     product: Product;
     errorMessage: string | null;
     isLoading: boolean;
+    isFavorited: boolean;
 };
 
 const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
@@ -36,9 +37,10 @@ const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
         product: {} as Product,
         errorMessage: null,
         isLoading: true,
+        isFavorited: false,
     });
 
-    const { product, errorMessage, isLoading } = state || {};
+    const { product, errorMessage, isLoading, isFavorited } = state || {};
 
     const {
         name,
@@ -76,13 +78,13 @@ const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
     useEffect(() => {
         (async () => {
             const result = await productService.getProductById(productId);
-            const { data, error } = result || {};
+            const { data, message, isFavorited, status } = result || {};
 
-            if (error) {
-                setState({ errorMessage: error, isLoading: false });
+            if (!status) {
+                setState({ errorMessage: message, isLoading: false });
                 return;
             }
-            setState({ product: data as Product, isLoading: false });
+            setState({ product: data as Product, isLoading: false, isFavorited });
         })();
     }, [productId, setState]);
 
@@ -118,6 +120,7 @@ const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
                                     description={description}
                                     price={price}
                                     stock={stock}
+                                    isFavorited={isFavorited}
                                 />
                                 <SellerInformation
                                     businessName={businessName}
