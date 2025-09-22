@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { generatePageNumbers } from "@/helpers/helperMethods";
@@ -31,18 +31,21 @@ const Pagination: React.FC<PaginationProps> = ({
     const endItem = Math.min(currentPage * itemsPerPage, totalItems);
     const pageNumbers = generatePageNumbers(currentPage, totalPages);
 
-    const updateURL = (page: number) => {
-        const params = new URLSearchParams(searchParams.toString());
+    const updateURL = useCallback(
+        (page: number) => {
+            const params = new URLSearchParams(searchParams.toString());
 
-        if (page === 1) {
-            params.delete(pageParam);
-        } else {
-            params.set(pageParam, page.toString());
-        }
+            if (page === 1) {
+                params.delete(pageParam);
+            } else {
+                params.set(pageParam, page.toString());
+            }
 
-        const newURL = params.toString() ? `?${params.toString()}` : window.location.pathname;
-        router.push(newURL, { scroll: false });
-    };
+            const newURL = params.toString() ? `?${params.toString()}` : window.location.pathname;
+            router.push(newURL, { scroll: false });
+        },
+        [searchParams, pageParam, router]
+    );
 
     const handlePrevious = () => {
         if (currentPage > 1 && !loading) {
@@ -61,6 +64,12 @@ const Pagination: React.FC<PaginationProps> = ({
             updateURL(page);
         }
     };
+
+    useEffect(() => {
+        if (currentPage > totalPages && !loading) {
+            updateURL(totalPages);
+        }
+    }, [currentPage, updateURL, loading, totalPages]);
 
     if (totalPages <= 1 && totalItems === 0) {
         return null;

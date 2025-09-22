@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 
 // Common
@@ -64,9 +64,31 @@ const FavoritePage = () => {
 
     const searchParams = useSearchParams();
 
-    const handleDelete = (productId: string) => {
-        console.log(productId);
+    const handleDelete = async (favoriteId: string) => {
+        const { message, success } = await favoriteService.deleteFavorite(favoriteId);
+        if (!success) {
+            setState({ errorMessage: message });
+            return;
+        }
+        await getFavorites();
     };
+
+    const getFavorites = useCallback(async () => {
+        setState({ isLoading: true });
+        const { data, message, success, totalCount, totalPages } =
+            await favoriteService.getFavorites(searchParams);
+        if (!success) {
+            setState({ errorMessage: message, isLoading: false });
+            return;
+        }
+
+        setState({
+            isLoading: false,
+            favorites: data || [],
+            totalCount: totalCount,
+            totalPages: totalPages,
+        });
+    }, [searchParams, setState]);
 
     useEffect(() => {
         (async () => {
@@ -91,31 +113,14 @@ const FavoritePage = () => {
     }, [setState]);
 
     useEffect(() => {
-        (async () => {
-            setState({ isLoading: true });
-            const { data, message, success, totalCount, totalPages } =
-                await favoriteService.getFavorites(searchParams);
-            if (!success) {
-                setState({ errorMessage: message, isLoading: false });
-                return;
-            }
-
-            setState({
-                isLoading: false,
-                favorites: data || [],
-                totalCount: totalCount,
-                totalPages: totalPages,
-            });
-        })();
-    }, [searchParams, setState]);
+        getFavorites();
+    }, [getFavorites]);
 
     const filterValues = {
         retailers,
         categories,
         brands,
     };
-
-    console.log(isLoading, favorites);
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -146,7 +151,7 @@ const FavoritePage = () => {
                             <SecondColumn
                                 productData={props.item.product}
                                 productId={props.item.product._id}
-                                onDelete={() => handleDelete(props.item.product._id)}
+                                onDelete={() => handleDelete(props.item._id)}
                             />
                         )}
                         totalCount={totalCount}

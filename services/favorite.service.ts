@@ -43,6 +43,23 @@ class FavoriteService {
             return { data: null, message: errorMessage, success: false };
         }
     }
+
+    async deleteFavorite(
+        favoriteId: string
+    ): Promise<{ data: null; message: string; success: boolean }> {
+        try {
+            const { data, message, success } = await fetchApi<{
+                data: null;
+                message: string;
+                success: boolean;
+            }>(`${process.env.NEXT_PUBLIC_BASE_URL}/favorite/${favoriteId}`, { method: "DELETE" });
+
+            return { data, message, success };
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Favorite delete error";
+            return { data: null, message: errorMessage, success: false };
+        }
+    }
 }
 
 export const favoriteService = new FavoriteService();
