@@ -5,8 +5,13 @@ import { MapPinIcon, EnvelopeIcon, PhotoIcon } from "@heroicons/react/24/outline
 
 import { Product } from "@/models/product.model";
 
-export const FirstColumn = ({ item }: { item: Product }) => {
-    const { image, name, description, brand, category, createdBy } = item;
+interface FirstColumnProps {
+    productData: Product;
+    favoriteCreatedAt?: string | Date;
+}
+
+export const FirstColumn = ({ productData, favoriteCreatedAt }: FirstColumnProps) => {
+    const { image, name, description, brand, category, createdBy } = productData || {};
 
     const { thumbnailUrl } = image || {};
     const { businessName, district, neighborhood, province, email } = createdBy || {};
@@ -43,17 +48,22 @@ export const FirstColumn = ({ item }: { item: Product }) => {
                 <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 mb-2">
                     {description}
                 </p>
-                <div className="mb-2">
-                    <span className="text-sm font-medium text-gray-700">Business Name: </span>
-                    <span className="text-sm font-medium text-blue-800 cursor-pointer">
-                        {businessName}
-                    </span>
-                </div>
+
+                {businessName && (
+                    <div className="mb-2">
+                        <span className="text-sm font-medium text-gray-700">Business Name: </span>
+                        <span className="text-sm font-medium text-blue-800 cursor-pointer">
+                            {businessName}
+                        </span>
+                    </div>
+                )}
 
                 <div className="flex items-center gap-2 mb-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
-                        Category: {categoryName}
-                    </span>
+                    {categoryName && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                            Category: {categoryName}
+                        </span>
+                    )}
                     {brandName && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
                             Brand: {brandName}
@@ -62,18 +72,34 @@ export const FirstColumn = ({ item }: { item: Product }) => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 text-sm text-gray-600">
+                    {neighborhoodName && districtName && provinceName && (
+                        <div className="flex items-center gap-1">
+                            <MapPinIcon className="w-4 h-4 text-gray-400" />
+                            <span className="font-medium">
+                                {neighborhoodName}, {districtName}, {provinceName}
+                            </span>
+                        </div>
+                    )}
+
+                    {email && (
+                        <div className="flex items-center gap-1">
+                            <EnvelopeIcon className="w-4 h-4 text-gray-400" />
+                            <span className="font-medium">{email}</span>
+                        </div>
+                    )}
+                </div>
+                {favoriteCreatedAt && (
                     <div className="flex items-center gap-1">
-                        <MapPinIcon className="w-4 h-4 text-gray-400" />
-                        <span className="font-medium">
-                            {neighborhoodName}, {districtName}, {provinceName}
+                        <span className="text-xs text-blue-600 font-bold bg-gray-200 px-2 py-1 rounded-md ">
+                            Favorite added at:{" "}
+                            {new Date(favoriteCreatedAt).toLocaleDateString("tr-TR", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                            })}
                         </span>
                     </div>
-
-                    <div className="flex items-center gap-1">
-                        <EnvelopeIcon className="w-4 h-4 text-gray-400" />
-                        <span className="font-medium">{email}</span>
-                    </div>
-                </div>
+                )}
             </div>
         </div>
     );

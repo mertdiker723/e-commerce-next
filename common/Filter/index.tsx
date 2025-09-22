@@ -43,7 +43,7 @@ const Filter = ({
 
     const filterItems = {
         product: <ProductFilter filterValues={filterValues} handleFilter={handleFilter} />,
-        favorite: <FavoriteFilter filterValues={[]} handleFilter={handleFilter} />,
+        favorite: <FavoriteFilter filterValues={filterValues} handleFilter={handleFilter} />,
     };
 
     return (

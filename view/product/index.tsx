@@ -81,10 +81,10 @@ const ProductPage = () => {
             try {
                 const [retailersData, categoriesData, brandsData, provincesData] =
                     await Promise.all([
-                        await productService.getRetailers(),
-                        await productService.getCategories(),
-                        await productService.getBrands(),
-                        await productService.getProvinces(),
+                        productService.getRetailers(),
+                        productService.getCategories(),
+                        productService.getBrands(),
+                        productService.getProvinces(),
                     ]);
 
                 setState({
@@ -104,7 +104,8 @@ const ProductPage = () => {
             setState({ productLoader: true });
             const result = await productService.getProducts(searchParams);
             if (result.error) {
-                setState({ errorMessage: result.error });
+                setState({ errorMessage: result.error, productLoader: false });
+                return;
             }
 
             setState({
@@ -165,8 +166,12 @@ const ProductPage = () => {
                         loading={productLoader}
                         errorMessage={errorMessage}
                         filteringItems={{ searchPlaceholder: "Search by product name" }}
-                        FirstColumn={FirstColumn}
-                        SecondColumn={SecondColumn}
+                        FirstColumn={(props: { item: Product }) => (
+                            <FirstColumn productData={props.item} />
+                        )}
+                        SecondColumn={(props: { item: Product }) => (
+                            <SecondColumn productData={props.item} productId={props.item._id} />
+                        )}
                         totalCount={totalCount}
                         totalPages={totalPages}
                     />

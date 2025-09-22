@@ -2,11 +2,14 @@ import { AddFavoriteResponse, GetFavoritesResponse } from "@/models/favorite.mod
 import { fetchApi } from "@/utils/fetchUtils";
 
 class FavoriteService {
-    async getFavorites(): Promise<GetFavoritesResponse> {
+    async getFavorites(searchParams: URLSearchParams): Promise<GetFavoritesResponse> {
         try {
+            const queryString = searchParams.toString();
             const { data, message, success, totalCount, totalPages } =
                 await fetchApi<GetFavoritesResponse>(
-                    `${process.env.NEXT_PUBLIC_BASE_URL}/favorites`
+                    `${process.env.NEXT_PUBLIC_BASE_URL}/favorites${
+                        queryString ? `?${queryString}` : ""
+                    }`
                 );
 
             return { data, message, success, totalCount, totalPages };
