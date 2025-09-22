@@ -1,12 +1,12 @@
-import { AddFavoriteResponse, GetFavoritesResponse } from "@/models/favorite.model";
+import { FavoriteResponse, ListFavoritesResponse } from "@/models/favorite.model";
 import { fetchApi } from "@/utils/fetchUtils";
 
 class FavoriteService {
-    async getFavorites(searchParams: URLSearchParams): Promise<GetFavoritesResponse> {
+    async getFavorites(searchParams: URLSearchParams): Promise<ListFavoritesResponse> {
         try {
             const queryString = searchParams.toString();
             const { data, message, success, totalCount, totalPages } =
-                await fetchApi<GetFavoritesResponse>(
+                await fetchApi<ListFavoritesResponse>(
                     `${process.env.NEXT_PUBLIC_BASE_URL}/favorites${
                         queryString ? `?${queryString}` : ""
                     }`
@@ -22,9 +22,9 @@ class FavoriteService {
             };
         }
     }
-    async addFavorite(productId: string): Promise<AddFavoriteResponse> {
+    async addFavorite(productId: string): Promise<FavoriteResponse> {
         try {
-            const { data, message, success } = await fetchApi<AddFavoriteResponse>(
+            const { data, message, success } = await fetchApi<FavoriteResponse>(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/favorite`,
                 {
                     method: "POST",
@@ -46,13 +46,12 @@ class FavoriteService {
 
     async deleteFavorite(
         favoriteId: string
-    ): Promise<{ data: null; message: string; success: boolean }> {
+    ): Promise<FavoriteResponse> {
         try {
-            const { data, message, success } = await fetchApi<{
-                data: null;
-                message: string;
-                success: boolean;
-            }>(`${process.env.NEXT_PUBLIC_BASE_URL}/favorite/${favoriteId}`, { method: "DELETE" });
+            const { data, message, success } = await fetchApi<FavoriteResponse>(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/favorite/${favoriteId}`, 
+                { method: "DELETE" }
+            );
 
             return { data, message, success };
         } catch (error) {

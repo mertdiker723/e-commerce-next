@@ -65,7 +65,7 @@ const FavoritePage = () => {
     const searchParams = useSearchParams();
 
     const handleDelete = async (favoriteId: string) => {
-        const { message, success } = await favoriteService.deleteFavorite(favoriteId);
+        const { success, message } = await favoriteService.deleteFavorite(favoriteId);
         if (!success) {
             setState({ errorMessage: message });
             return;

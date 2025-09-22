@@ -7,7 +7,7 @@ export interface Favorite {
     createdAt: Date;
 }
 
-export interface GetFavoritesResponse {
+export interface ListFavoritesResponse {
     data: Favorite[];
     message: string | null;
     success: boolean;
@@ -15,7 +15,7 @@ export interface GetFavoritesResponse {
     totalPages?: number;
 }
 
-export interface AddFavoriteResponse {
+export interface FavoriteResponse {
     data: { _id: string } | null;
     message: string | null;
     success: boolean;
