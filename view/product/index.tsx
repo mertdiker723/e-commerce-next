@@ -20,6 +20,9 @@ import { useMergeState } from "@/hooks/useMergeState";
 
 // Services
 import { productService } from "@/services/product.service";
+import { brandService } from "@/services/brand.services";
+import { retailerService } from "@/services/retailer.services";
+import { categoryService } from "@/services/category.services";
 
 // Models
 import { Category } from "@/models/category.model";
@@ -27,6 +30,7 @@ import { Brand } from "@/models/brand.model";
 import { Province } from "@/models/province.model";
 import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
+import { locationService } from "@/services/location.services";
 
 type ProductState = {
     products: Product[];
@@ -81,10 +85,10 @@ const ProductPage = () => {
             try {
                 const [retailersData, categoriesData, brandsData, provincesData] =
                     await Promise.all([
-                        productService.getRetailers(),
-                        productService.getCategories(),
-                        productService.getBrands(),
-                        productService.getProvinces(),
+                        retailerService.getRetailers(),
+                        categoryService.getCategories(),
+                        brandService.getBrands(),
+                        locationService.getProvinces(),
                     ]);
 
                 setState({
@@ -120,7 +124,7 @@ const ProductPage = () => {
     useEffect(() => {
         (async () => {
             if (provinceId) {
-                const districts = await productService.getDistricts(Number(provinceId));
+                const districts = await locationService.getDistricts(Number(provinceId));
                 setState({ districts, neighborhoods: [] });
             } else {
                 setState({ districts: [], neighborhoods: [] });
@@ -131,7 +135,7 @@ const ProductPage = () => {
     useEffect(() => {
         (async () => {
             if (districtId && provinceId) {
-                const neighborhoods = await productService.getNeighborhoods(Number(districtId));
+                const neighborhoods = await locationService.getNeighborhoods(Number(districtId));
                 setState({ neighborhoods });
             } else {
                 setState({ neighborhoods: [] });

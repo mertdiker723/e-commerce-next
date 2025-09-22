@@ -19,10 +19,14 @@ import { Retailer } from "@/models/retailer.model";
 import { Category } from "@/models/category.model";
 import { Brand } from "@/models/brand.model";
 
-// Components - using reusable product listing components
+// Components
 import { FirstColumn } from "@/components/product/listing/FirstColumn";
 import { SecondColumn } from "@/components/product/listing/SecondColumn";
-import { productService } from "@/services/product.service";
+
+// Services
+import { brandService } from "@/services/brand.services";
+import { retailerService } from "@/services/retailer.services";
+import { categoryService } from "@/services/category.services";
 
 type FavoriteState = {
     favorites: Favorite[];
@@ -68,9 +72,9 @@ const FavoritePage = () => {
         (async () => {
             try {
                 const [retailersResponse, categoriesResponse, brandsResponse] = await Promise.all([
-                    productService.getRetailers(),
-                    productService.getCategories(),
-                    productService.getBrands(),
+                    retailerService.getRetailers(),
+                    categoryService.getCategories(),
+                    brandService.getBrands(),
                 ]);
 
                 setState({
