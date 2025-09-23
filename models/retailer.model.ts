@@ -14,3 +14,9 @@ export interface Retailer {
     district: District;
     neighborhood: Neighborhood;
 }
+
+export interface GetRetailerByIdResponse {
+    data: Retailer | null;
+    success: boolean;
+    message?: string;
+}

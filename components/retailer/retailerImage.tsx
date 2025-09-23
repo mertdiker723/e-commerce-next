@@ -1,18 +1,18 @@
 import Image from "next/image";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 
-type ProductImageProps = {
+type RetailerImageProps = {
     url?: string;
     name?: string;
 };
 
-const ProductImage = ({ url, name }: ProductImageProps) => {
+const RetailerImage = ({ url, name }: RetailerImageProps) => {
     return (
         <div className="bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center h-full">
             {url ? (
                 <Image
                     src={url}
-                    alt={name || "Product image"}
+                    alt={name || "Retailer image"}
                     width={600}
                     height={600}
                     className="w-full h-full object-contain"
@@ -26,4 +26,4 @@ const ProductImage = ({ url, name }: ProductImageProps) => {
     );
 };
 
-export default ProductImage;
+export default RetailerImage;

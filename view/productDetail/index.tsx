@@ -67,6 +67,7 @@ const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
         phoneNumber,
         province,
         surname,
+        _id: retailerId,
     } = createdBy || {};
 
     const { name: districtName } = district || {};
@@ -90,7 +91,7 @@ const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
 
     const breadcrumbItems: BreadcrumbItem[] = [
         { label: "Products", href: "/product" },
-        { label: product?.name },
+        { label: `Product Detail: ${product?.name}` },
     ];
 
     if (isLoading) {
@@ -125,6 +126,7 @@ const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
                                 <SellerInformation
                                     businessName={businessName}
                                     retailerName={retailerName}
+                                    retailerId={retailerId}
                                     surname={surname}
                                     email={email}
                                     phoneNumber={phoneNumber}

@@ -3,9 +3,7 @@ const ProductDetailSkeleton = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-10">
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-8">
-                    <div className="space-y-4">
-                        <div className="aspect-square bg-gray-200 rounded-lg animate-pulse"></div>
-                    </div>
+                    <div className="bg-gray-100 rounded-lg animate-pulse overflow-hidden flex items-center justify-center h-full" />
 
                     <div className="space-y-6">
                         <div>

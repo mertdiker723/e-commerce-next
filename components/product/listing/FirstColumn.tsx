@@ -4,6 +4,7 @@ import Image from "next/image";
 import { MapPinIcon, EnvelopeIcon, PhotoIcon } from "@heroicons/react/24/outline";
 
 import { Product } from "@/models/product.model";
+import Link from "next/link";
 
 interface FirstColumnProps {
     productData: Product;
@@ -14,7 +15,14 @@ export const FirstColumn = ({ productData, favoriteCreatedAt }: FirstColumnProps
     const { image, name, description, brand, category, createdBy } = productData || {};
 
     const { thumbnailUrl } = image || {};
-    const { businessName, district, neighborhood, province, email } = createdBy || {};
+    const {
+        businessName,
+        district,
+        neighborhood,
+        province,
+        email,
+        _id: retailerId,
+    } = createdBy || {};
 
     const { name: brandName } = brand || {};
     const { name: categoryName } = category || {};
@@ -52,9 +60,12 @@ export const FirstColumn = ({ productData, favoriteCreatedAt }: FirstColumnProps
                 {businessName && (
                     <div className="mb-2">
                         <span className="text-sm font-medium text-gray-700">Business Name: </span>
-                        <span className="text-sm font-medium text-blue-800 cursor-pointer">
+                        <Link
+                            href={`/retailer/${retailerId}`}
+                            className="text-sm font-medium text-blue-800 cursor-pointer hover:text-blue-600 hover:underline transition-all duration-200"
+                        >
                             {businessName}
-                        </span>
+                        </Link>
                     </div>
                 )}
 

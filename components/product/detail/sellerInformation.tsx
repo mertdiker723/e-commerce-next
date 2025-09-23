@@ -1,6 +1,9 @@
+import Link from "next/link";
+
 type SellerInformationProps = {
     businessName: string;
     retailerName: string;
+    retailerId: string;
     surname: string;
     email: string;
     phoneNumber: string;
@@ -13,6 +16,7 @@ type SellerInformationProps = {
 const SellerInformation = ({
     businessName,
     retailerName,
+    retailerId,
     surname,
     email,
     phoneNumber,
@@ -27,7 +31,12 @@ const SellerInformation = ({
             <div className="space-y-2">
                 <div className="flex justify-between">
                     <span className="text-xs text-gray-600">Business:</span>
-                    <span className="text-xs font-medium text-gray-900">{businessName || "-"}</span>
+                    <Link
+                        href={`/retailer/${retailerId}`}
+                        className="text-xs font-medium text-blue-900 hover:text-blue-600 hover:underline transition-all duration-200"
+                    >
+                        {businessName || "-"}
+                    </Link>
                 </div>
                 <div className="flex justify-between">
                     <span className="text-xs text-gray-600">Contact:</span>
