@@ -128,7 +128,7 @@ const FavoritePage = () => {
                 <h1 className="text-4xl font-bold text-gray-900 mb-2">Favorite Products</h1>
                 <p className="text-gray-600">Browse your favorite products</p>
                 <p className="text-gray-400 text-sm">
-                    You can add max 15 products to your favorite list!
+                    You can add max 10 products to your favorite list!
                 </p>
             </div>
             <div className="lg:flex lg:gap-6">

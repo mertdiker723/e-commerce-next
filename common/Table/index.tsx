@@ -18,6 +18,7 @@ interface TableProps<T> {
     totalPages: number;
     itemsPerPage?: number;
     pageParam?: string;
+    isPagination?: boolean;
 }
 
 export const Table = <T,>({
@@ -32,6 +33,7 @@ export const Table = <T,>({
     totalPages,
     itemsPerPage = 5,
     pageParam = "page",
+    isPagination = true,
 }: TableProps<T>) => {
     return (
         <div className={className}>
@@ -59,13 +61,15 @@ export const Table = <T,>({
                             </p>
                         </div>
                     )}
-                    <Pagination
-                        totalItems={totalCount}
-                        totalPages={totalPages}
-                        itemsPerPage={itemsPerPage}
-                        loading={loading}
-                        pageParam={pageParam}
-                    />
+                    {isPagination && (
+                        <Pagination
+                            totalItems={totalCount}
+                            totalPages={totalPages}
+                            itemsPerPage={itemsPerPage}
+                            loading={loading}
+                            pageParam={pageParam}
+                        />
+                    )}
                 </div>
             </div>
         </div>
