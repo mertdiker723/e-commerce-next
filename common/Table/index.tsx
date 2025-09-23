@@ -44,7 +44,7 @@ export const Table = <T,>({
                         items.map((item, index) => {
                             return (
                                 <div key={index}>
-                                    <div className="flex justify-between gap-x-4 p-6 hover:bg-gray-50 transition-colors duration-200 group">
+                                    <div className="flex flex-col md:flex-row md:justify-between gap-4 p-6 hover:bg-gray-50 transition-colors duration-200 group">
                                         <FirstColumn item={item} />
                                         <SecondColumn item={item} />
                                     </div>
