@@ -1,4 +1,4 @@
-import { fetchApi } from "../utils/fetchUtils";
+import { fetchApi, fetchApiSSR } from "../utils/fetchUtils";
 
 // Models
 import {
@@ -29,14 +29,23 @@ export class ProductService {
         }
     }
 
-    async getProductById(id: string): Promise<ProductByIdResponse> {
+    async getProductById(id: string, cookiesString?: string): Promise<ProductByIdResponse> {
         try {
-            const { data, isFavorited, status } = await fetchApi<ProductByIdResponse>(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/product/${id}`
+            const headers: Record<string, string> = {
+                Cookie: cookiesString || "",
+            };
+
+            const { data, isFavorited, status } = await fetchApiSSR<ProductByIdResponse>(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/product/${id}`,
+                {
+                    headers,
+                }
             );
+
             return { data, message: null, isFavorited, status };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Product fetch error";
+
             return { data: null, message: errorMessage, isFavorited: false, status: false };
         }
     }

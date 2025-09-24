@@ -1,10 +1,5 @@
-"use client";
-
-import { useEffect } from "react";
-
 // Common
 import Breadcrumb, { BreadcrumbItem } from "@/common/Breadcrumb";
-import ProductDetailSkeleton from "@/common/skeleton/productDetailSkeleton";
 
 // Components
 import ProductErrorMessage from "@/components/product/detail/productErrorMessage";
@@ -15,38 +10,19 @@ import SellerInformation from "@/components/product/detail/sellerInformation";
 // Models
 import { Product } from "@/models/product.model";
 
-// Hooks
-import { useMergeState } from "@/hooks/useMergeState";
-
-// Services
-import { productService } from "@/services/product.service";
-
 type ProductDetailPageProps = {
     productId: string;
-};
-
-type ProductDetailState = {
-    product: Product;
-    errorMessage: string | null;
-    isLoading: boolean;
+    data?: Product | null;
     isFavorited: boolean;
+    message: string | null;
 };
 
-const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
-    const [state, setState] = useMergeState<ProductDetailState>({
-        product: {} as Product,
-        errorMessage: null,
-        isLoading: true,
-        isFavorited: false,
-    });
-
-    const { product, errorMessage, isLoading, isFavorited } = state || {};
-
+const ProductDetailPage = ({ data, isFavorited, message }: ProductDetailPageProps) => {
     const {
         name,
         description,
         price,
-        status,
+        status: statusProduct,
         stock,
         image,
         updatedAt,
@@ -54,7 +30,7 @@ const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
         category,
         createdBy,
         _id,
-    } = product || {};
+    } = data || {};
 
     const { url } = image || {};
     const {
@@ -76,27 +52,10 @@ const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
     const { name: brandName } = brand || {};
     const { name: categoryName } = category || {};
 
-    useEffect(() => {
-        (async () => {
-            const result = await productService.getProductById(productId);
-            const { data, message, isFavorited, status } = result || {};
-
-            if (!status) {
-                setState({ errorMessage: message, isLoading: false });
-                return;
-            }
-            setState({ product: data as Product, isLoading: false, isFavorited });
-        })();
-    }, [productId, setState]);
-
     const breadcrumbItems: BreadcrumbItem[] = [
         { label: "Products", href: "/product" },
-        { label: `Product Detail: ${product?.name}` },
+        { label: `Product Detail: ${data?.name}` },
     ];
-
-    if (isLoading) {
-        return <ProductDetailSkeleton />;
-    }
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -107,13 +66,13 @@ const ProductDetailPage = ({ productId }: ProductDetailPageProps) => {
                     <ProductImage url={url} name={name} />
 
                     <div className="space-y-6">
-                        {errorMessage ? (
-                            <ProductErrorMessage errorMessage={errorMessage} />
+                        {message ? (
+                            <ProductErrorMessage errorMessage={message} />
                         ) : (
                             <>
                                 <ProductInformation
                                     productId={_id}
-                                    status={status}
+                                    status={statusProduct}
                                     name={name}
                                     updatedAt={updatedAt}
                                     brandName={brandName}

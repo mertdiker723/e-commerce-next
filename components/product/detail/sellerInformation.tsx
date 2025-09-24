@@ -1,16 +1,16 @@
 import Link from "next/link";
 
 type SellerInformationProps = {
-    businessName: string;
-    retailerName: string;
-    retailerId: string;
-    surname: string;
-    email: string;
-    phoneNumber: string;
-    provinceName: string;
-    districtName: string;
-    neighborhoodName: string;
-    openAddress: string;
+    businessName?: string;
+    retailerName?: string;
+    retailerId?: string;
+    surname?: string;
+    email?: string;
+    phoneNumber?: string;
+    provinceName?: string;
+    districtName?: string;
+    neighborhoodName?: string;
+    openAddress?: string;
 };
 
 const SellerInformation = ({

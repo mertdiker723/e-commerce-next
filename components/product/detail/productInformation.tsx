@@ -1,3 +1,5 @@
+"use client";
+
 import { HeartIcon } from "@heroicons/react/24/outline";
 
 // Common
@@ -8,16 +10,16 @@ import { favoriteService } from "@/services/favorite.service";
 import { useMergeState } from "@/hooks/useMergeState";
 
 type ProductInformationProps = {
-    status: boolean;
-    name: string;
-    updatedAt: string;
-    brandName: string;
-    categoryName: string;
-    description: string | null;
-    price: number;
-    stock: number;
-    productId: string;
-    isFavorited: boolean;
+    status?: boolean;
+    name?: string;
+    updatedAt?: string;
+    brandName?: string;
+    categoryName?: string;
+    description?: string | null;
+    price?: number;
+    stock?: number;
+    productId?: string;
+    isFavorited?: boolean;
 };
 
 const ProductInformation = ({
@@ -42,6 +44,7 @@ const ProductInformation = ({
     const { message } = state || {};
 
     const handleAddFavorite = async () => {
+        if (!productId) return;
         const { message, success } = await favoriteService.addFavorite(productId);
         if (success) {
             setState({ isFavorited: true });
@@ -58,9 +61,9 @@ const ProductInformation = ({
                 {status ? "Active" : "Inactive"}
             </span>
             <div className="flex justify-between items-center space-x-2 mb-2 mt-1">
-                <div className="text-3xl font-bold text-gray-900">{name}</div>
+                <div className="text-3xl font-bold text-gray-900">{name || "--"}</div>
                 <div className="text-sm text-gray-400">
-                    {new Date(updatedAt).toLocaleDateString("tr-TR", {
+                    {new Date(updatedAt || "").toLocaleDateString("tr-TR", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -92,7 +95,7 @@ const ProductInformation = ({
             <div className="border-t border-b border-gray-200 py-4">
                 <div className="flex justify-between items-center space-x-3">
                     <span className="text-3xl font-bold text-gray-900">
-                        Price: ₺{price?.toLocaleString("tr-TR") || "0"}
+                        Price: ₺{price?.toLocaleString("tr-TR") || "--"}
                     </span>
 
                     <div className="flex items-center space-x-3">
