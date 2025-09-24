@@ -35,6 +35,14 @@ export interface ProductResponse {
     totalPages: number;
 }
 
+export interface ProductRetailerResponse {
+    message?: string;
+    success: boolean;
+    data: Product[];
+    totalCount: number;
+    totalPages: number;
+}
+
 export interface ProductByIdResponse {
     data: Product | null;
     isFavorited: boolean;

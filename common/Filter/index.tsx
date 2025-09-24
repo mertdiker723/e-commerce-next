@@ -7,9 +7,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 // Components
-import ProductFilter from "@/components/filterItems/productFilter";
 import Button from "../Button";
+import ProductFilter from "@/components/filterItems/productFilter";
 import FavoriteFilter from "@/components/filterItems/favoriteFilter";
+import RetailerFilter from "@/components/filterItems/retailerFilter";
 
 const Filter = ({
     filterName,
@@ -44,6 +45,7 @@ const Filter = ({
     const filterItems = {
         product: <ProductFilter filterValues={filterValues} handleFilter={handleFilter} />,
         favorite: <FavoriteFilter filterValues={filterValues} handleFilter={handleFilter} />,
+        retailer: <RetailerFilter filterValues={filterValues} handleFilter={handleFilter} />,
     };
 
     return (
