@@ -45,8 +45,16 @@ export class ProductService {
             return { data, message: null, isFavorited, status };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Product fetch error";
+            const statusCode =
+                error instanceof Error ? (error as unknown as { status: number }).status : null;
 
-            return { data: null, message: errorMessage, isFavorited: false, status: false };
+            return {
+                data: null,
+                message: errorMessage,
+                isFavorited: false,
+                status: false,
+                statusCode,
+            };
         }
     }
 

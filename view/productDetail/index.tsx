@@ -15,9 +15,10 @@ type ProductDetailPageProps = {
     data?: Product | null;
     isFavorited: boolean;
     message: string | null;
+    statusCode?: number | null;
 };
 
-const ProductDetailPage = ({ data, isFavorited, message }: ProductDetailPageProps) => {
+const ProductDetailPage = ({ data, isFavorited, message, statusCode }: ProductDetailPageProps) => {
     const {
         name,
         description,
@@ -67,7 +68,7 @@ const ProductDetailPage = ({ data, isFavorited, message }: ProductDetailPageProp
 
                     <div className="space-y-6">
                         {message ? (
-                            <ProductErrorMessage errorMessage={message} />
+                            <ProductErrorMessage errorMessage={message} statusCode={statusCode} />
                         ) : (
                             <>
                                 <ProductInformation

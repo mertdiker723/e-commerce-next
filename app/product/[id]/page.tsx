@@ -20,6 +20,7 @@ const ProductDetail = async ({ params }: { params: Promise<{ id: string }> }) =>
             data={productData.data}
             isFavorited={productData.isFavorited}
             message={productData.message}
+            statusCode={productData.statusCode}
         />
     );
 };

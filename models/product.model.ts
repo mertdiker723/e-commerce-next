@@ -48,4 +48,5 @@ export interface ProductByIdResponse {
     isFavorited: boolean;
     status: boolean;
     message: string | null;
+    statusCode?: number | null;
 }
