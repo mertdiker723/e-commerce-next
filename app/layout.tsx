@@ -8,7 +8,7 @@ import "./globals.css";
 import ReduxProvider from "@/lib/redux/provider";
 
 // Components
-import NavbarWrapper from "@/components/shared/NavbarWrapper";
+import NavbarWrapper from "@/common/Navbar/navbarWrapper";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -22,7 +22,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
     title: "ShopLocal",
-    description: "ShopLocal is a platform for finding local products and supporting local businesses.",
+    description:
+        "ShopLocal is a platform for finding local products and supporting local businesses.",
 };
 
 export default function RootLayout({
@@ -32,9 +33,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <ReduxProvider>
                     <NavbarWrapper />
                     {children}

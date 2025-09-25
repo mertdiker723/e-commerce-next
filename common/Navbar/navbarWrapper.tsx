@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
 
 // Components
-import UserNavbar from "@/components/user/Navbar";
+import UserNavbar from "@/common/Navbar";
 
 // Libs
 import { RootState } from "@/lib/redux/store";
@@ -38,8 +38,7 @@ const NavbarWrapper = () => {
                         dispatch(setUser(result.user));
                         return;
                     }
-
-                    // user apisi fail veridiğinde ne yapmalıyız? 
+                    // if user api fail, what to do ??
                     dispatch(resetWasLoggedOut());
                     dispatch(logout());
                     router.push(LOGIN);

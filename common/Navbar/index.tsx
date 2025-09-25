@@ -1,18 +1,23 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { UserIcon } from "@heroicons/react/24/outline";
 
-// Actions
-
+// Common
 import Button from "@/common/Button";
 
 // Lib
 import { logout } from "@/lib/redux/slices/userSlice";
+import { RootState } from "@/lib/redux/store";
+
+// Services
 import { logoutUser } from "@/services/auth.services";
+
+// Core
 import { LOGIN } from "@/core/routeConstants";
 
 const UserNavbar = () => {
@@ -22,7 +27,10 @@ const UserNavbar = () => {
     });
 
     // Redux
+    const { user } = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch();
+
+    const { email } = user || {};
 
     // Router
     const router = useRouter();
@@ -72,7 +80,7 @@ const UserNavbar = () => {
                                 </Link>
                             </div>
                         </div>
-                        <div className="ml-auto flex items-center pr-2">
+                        <div className="ml-auto flex items-center pr-2 space-x-4">
                             <Link href="/favorites" className={getLinkClassName("/favorites")}>
                                 My Favorites
                             </Link>
@@ -84,6 +92,15 @@ const UserNavbar = () => {
                                     isPending={isPending}
                                 />
                             </form>
+                            {/* User email display */}
+                            {email && (
+                                <div className="flex items-center space-x-2 px-3 py-1 select-none cursor-pointer bg-gray-700/50 rounded-lg border border-gray-600">
+                                    <UserIcon className="h-4 w-4 text-gray-400" />
+                                    <span className="text-gray-200 text-sm font-normal">
+                                        {email}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

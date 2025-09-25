@@ -10,7 +10,7 @@ import Input from "@/common/Input/input";
 import Button from "@/common/Button";
 
 // Services & Redux
-import { loginUser } from "@/services/auth.services";
+import { getUser, loginUser } from "@/services/auth.services";
 import { setUser, resetWasLoggedOut } from "@/lib/redux/slices/userSlice";
 
 // Types
@@ -29,11 +29,14 @@ const Login = () => {
     const { error, success, user } = state;
 
     useEffect(() => {
-        if (success && user) {
-            dispatch(setUser(user));
-            dispatch(resetWasLoggedOut());
-            router.push("/");
-        }
+        (async () => {
+            const { success, user } = await getUser();
+            if (success && user) {
+                dispatch(setUser(user));
+                dispatch(resetWasLoggedOut());
+                router.push("/");
+            }
+        })();
     }, [success, user, dispatch, router]);
 
     return (
