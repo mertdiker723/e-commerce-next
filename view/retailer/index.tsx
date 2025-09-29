@@ -94,6 +94,7 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
         name,
         surname,
         email,
+        image,
         phoneNumber,
         openAddress,
         province,
@@ -207,7 +208,7 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
                 <>
                     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-8">
-                            <RetailerImage url={undefined} name={businessName} />
+                            <RetailerImage url={image?.url} name={businessName} />
                             <div className="space-y-6">
                                 {errorMessageDetail ? (
                                     <RetailerErrorMessage errorMessage={errorMessageDetail || ""} />

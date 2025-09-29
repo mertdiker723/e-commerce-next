@@ -2,6 +2,7 @@
 import { Brand } from "./brand.model";
 import { Category } from "./category.model";
 import { Retailer } from "./retailer.model";
+import { Image } from "./shared/index.model";
 
 export interface Product {
     image?: Image | null;
@@ -16,15 +17,6 @@ export interface Product {
     createdBy: Retailer;
     createdAt: string;
     updatedAt: string;
-}
-
-export interface Image {
-    fileId: string;
-    url: string;
-    thumbnailUrl: string;
-    name: string;
-    size: number;
-    filePath: string;
 }
 
 export interface ProductResponse {
