@@ -47,12 +47,14 @@ const Login = () => {
                 </div>
             )}
 
-            <div>
-                <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900 mb-2">
-                    Email
-                </label>
-                <Input type="email" id="email" name="email" required placeholder="Email" />
-            </div>
+            <Input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="Email"
+                label="Email"
+            />
 
             <div>
                 <div className="flex items-center justify-between mb-2">

@@ -41,18 +41,23 @@ const Register = () => {
                         <p className="text-sm text-red-700 break-words">{error}</p>
                     </div>
                 )}
-                <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900 mb-2">
-                    Email
-                </label>
-                <Input type="email" id="email" name="email" placeholder="Email" />
-                <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900 mb-2">
-                    Password
-                </label>
-                <Input type="password" id="password" name="password" placeholder="Password" />
-                <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900 mb-2">
-                    Repassword
-                </label>
-                <Input type="password" id="Repassword" name="repassword" placeholder="Repassword" />
+
+                <Input type="email" id="email" name="email" placeholder="Email" label="Email" />
+
+                <Input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Password"
+                    label="Password"
+                />
+                <Input
+                    type="password"
+                    id="Repassword"
+                    name="repassword"
+                    placeholder="Repassword"
+                    label="Repassword"
+                />
                 <Button
                     type="submit"
                     label="Register"
