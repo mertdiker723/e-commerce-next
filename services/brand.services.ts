@@ -1,16 +1,17 @@
 import { fetchApi } from "@/utils/fetchUtils";
-import { Brand } from "@/models/brand.model";
+import { BrandDropdownResponse } from "@/models/brand.model";
 
 export class BrandService {
-    // Get all brands
-    async getBrands(): Promise<Brand[]> {
+    async getBrandsDropdown(): Promise<BrandDropdownResponse> {
         try {
-            const { data } = await fetchApi<{ data: Brand[] }>(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/brands`
+            const { data, success, message } = await fetchApi<BrandDropdownResponse>(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/dropdown/brands`
             );
-            return data;
-        } catch {
-            return [];
+            return { data, success, message };
+        } catch (error) {
+            const errorMessage =
+                error instanceof Error ? error.message : "Brands dropdown fetch error";
+            return { data: [], success: false, message: errorMessage };
         }
     }
 }

@@ -1,18 +1,7 @@
-import { Retailer, GetRetailerByIdResponse } from "@/models/retailer.model";
+import { GetRetailerByIdResponse, RetailerDropdownResponse } from "@/models/retailer.model";
 import { fetchApi } from "@/utils/fetchUtils";
 
 export class RetailerService {
-    async getRetailers(): Promise<Retailer[]> {
-        try {
-            const { data } = await fetchApi<{ data: Retailer[] }>(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/retailers`
-            );
-            return data;
-        } catch {
-            return [];
-        }
-    }
-
     async getRetailerById(retailerId: string): Promise<GetRetailerByIdResponse> {
         try {
             const { data, success, message } = await fetchApi<GetRetailerByIdResponse>(
@@ -22,6 +11,19 @@ export class RetailerService {
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Retailer fetch error";
             return { data: null, message: errorMessage, success: false };
+        }
+    }
+
+    async getRetailersDropdown(): Promise<RetailerDropdownResponse> {
+        try {
+            const { data, success, message } = await fetchApi<RetailerDropdownResponse>(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/dropdown/retailers`
+            );
+            return { data, success, message };
+        } catch (error) {
+            const errorMessage =
+                error instanceof Error ? error.message : "Dropdown retailers fetch error";
+            return { data: [], success: false, message: errorMessage };
         }
     }
 }

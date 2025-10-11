@@ -15,7 +15,7 @@ import { favoriteService } from "@/services/favorite.service";
 
 // Models
 import { Favorite } from "@/models/favorite.model";
-import { Retailer } from "@/models/retailer.model";
+import { RetailerDropdown } from "@/models/retailer.model";
 import { Category } from "@/models/category.model";
 import { Brand } from "@/models/brand.model";
 
@@ -30,7 +30,7 @@ import { categoryService } from "@/services/category.services";
 
 type FavoriteState = {
     favorites: Favorite[];
-    retailers: Retailer[];
+    retailers: RetailerDropdown[];
     errorMessage: string | null;
     isLoading: boolean;
     totalCount: number;
@@ -94,15 +94,15 @@ const FavoritePage = () => {
         (async () => {
             try {
                 const [retailersResponse, categoriesResponse, brandsResponse] = await Promise.all([
-                    retailerService.getRetailers(),
-                    categoryService.getCategories(),
-                    brandService.getBrands(),
+                    retailerService.getRetailersDropdown(),
+                    categoryService.getCategoriesDropdown(),
+                    brandService.getBrandsDropdown(),
                 ]);
 
                 setState({
-                    retailers: retailersResponse,
-                    categories: categoriesResponse,
-                    brands: brandsResponse,
+                    retailers: retailersResponse.data,
+                    categories: categoriesResponse.data,
+                    brands: brandsResponse.data,
                 });
             } catch (error) {
                 setState({

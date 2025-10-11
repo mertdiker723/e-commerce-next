@@ -8,7 +8,7 @@ import SelectBox from "@/common/SelectBox";
 import Checkbox from "@/common/Checkbox";
 
 // Models
-import { Retailer } from "@/models/retailer.model";
+import { RetailerDropdown } from "@/models/retailer.model";
 import { Category } from "@/models/category.model";
 import { Brand } from "@/models/brand.model";
 import { Province } from "@/models/province.model";
@@ -27,7 +27,7 @@ const ProductFilter = ({
     handleFilter,
 }: {
     filterValues: {
-        retailers: Retailer[];
+        retailers: RetailerDropdown[];
         categories: Category[];
         brands: Brand[];
         provinces: Province[];

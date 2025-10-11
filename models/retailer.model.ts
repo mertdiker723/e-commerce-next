@@ -22,3 +22,14 @@ export interface GetRetailerByIdResponse {
     success: boolean;
     message?: string;
 }
+
+export interface RetailerDropdown {
+    _id: string;
+    businessName: string;
+}
+
+export interface RetailerDropdownResponse {
+    data: RetailerDropdown[];
+    success: boolean;
+    message?: string;
+}

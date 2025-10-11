@@ -125,14 +125,14 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
         (async () => {
             try {
                 const [categoriesData, brandsData, provincesData] = await Promise.all([
-                    categoryService.getCategories(),
-                    brandService.getBrands(),
+                    categoryService.getCategoriesDropdown(),
+                    brandService.getBrandsDropdown(),
                     locationService.getProvinces(),
                 ]);
 
                 setState({
-                    categories: categoriesData,
-                    brands: brandsData,
+                    categories: categoriesData.data,
+                    brands: brandsData.data,
                     provinces: provincesData,
                 });
             } catch (error) {

@@ -1,16 +1,17 @@
-import { Category } from "@/models/category.model";
+import { CategoryDropdownResponse } from "@/models/category.model";
 import { fetchApi } from "@/utils/fetchUtils";
 
 export class CategoryService {
-    // Get all categories
-    async getCategories(): Promise<Category[]> {
+    async getCategoriesDropdown(): Promise<CategoryDropdownResponse> {
         try {
-            const { data } = await fetchApi<{ data: Category[] }>(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/categories`
+            const { data, success, message } = await fetchApi<CategoryDropdownResponse>(
+                `${process.env.NEXT_PUBLIC_BASE_URL}/dropdown/categories`
             );
-            return data;
-        } catch {
-            return [];
+            return { data, success, message };
+        } catch (error) {
+            const errorMessage =
+                error instanceof Error ? error.message : "Categories dropdown fetch error";
+            return { data: [], success: false, message: errorMessage };
         }
     }
 }

@@ -13,7 +13,7 @@ import { SecondColumn } from "@/components/product/listing/SecondColumn";
 
 // Types
 import { Product } from "@/models/product.model";
-import { Retailer } from "@/models/retailer.model";
+import { RetailerDropdown } from "@/models/retailer.model";
 
 // Hooks
 import { useMergeState } from "@/hooks/useMergeState";
@@ -34,7 +34,7 @@ import { locationService } from "@/services/location.services";
 
 type ProductState = {
     products: Product[];
-    retailers: Retailer[];
+    retailers: RetailerDropdown[];
     categories: Category[];
     brands: Brand[];
     provinces: Province[];
@@ -85,16 +85,16 @@ const ProductPage = () => {
             try {
                 const [retailersData, categoriesData, brandsData, provincesData] =
                     await Promise.all([
-                        retailerService.getRetailers(),
-                        categoryService.getCategories(),
-                        brandService.getBrands(),
+                        retailerService.getRetailersDropdown(),
+                        categoryService.getCategoriesDropdown(),
+                        brandService.getBrandsDropdown(),
                         locationService.getProvinces(),
                     ]);
 
                 setState({
-                    retailers: retailersData,
-                    categories: categoriesData,
-                    brands: brandsData,
+                    retailers: retailersData.data,
+                    categories: categoriesData.data,
+                    brands: brandsData.data,
                     provinces: provincesData,
                 });
             } catch (error) {
