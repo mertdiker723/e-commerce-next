@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 // Common
 import Filter from "@/common/Filter";
@@ -67,9 +68,10 @@ const FavoritePage = () => {
     const handleDelete = async (favoriteId: string) => {
         const { success, message } = await favoriteService.deleteFavorite(favoriteId);
         if (!success) {
-            setState({ errorMessage: message });
+            toast.error(message || "Failed to delete favorite");
             return;
         }
+        toast.success("Favorite removed successfully");
         await getFavorites();
     };
 
@@ -105,9 +107,9 @@ const FavoritePage = () => {
                     brands: brandsResponse.data,
                 });
             } catch (error) {
-                setState({
-                    errorMessage: error instanceof Error ? error.message : "Data loading error",
-                });
+                const errorMessage = error instanceof Error ? error.message : "Data loading error";
+                toast.error(errorMessage);
+                setState({ errorMessage });
             }
         })();
     }, [setState]);

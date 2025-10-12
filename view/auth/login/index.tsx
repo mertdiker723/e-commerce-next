@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 // Components
 import Input from "@/common/Input/input";
@@ -26,27 +27,41 @@ const Login = () => {
     const [state, formAction, isPending] = useActionState(loginUser, initialState);
     const dispatch = useDispatch();
     const router = useRouter();
-    const { error, success, user } = state;
+    const { error, success } = state;
+
+    const successLoginHandle = useCallback(async () => {
+        const { success, user } = await getUser();
+        if (success && user) {
+            dispatch(setUser(user));
+            dispatch(resetWasLoggedOut());
+            router.push("/");
+        }
+    }, [dispatch, router]);
+
+    const errorLoginHandle = useCallback(
+        (errorMessage: string) => {
+            if (!isPending) {
+                toast.error(errorMessage);
+            }
+        },
+        [isPending]
+    );
 
     useEffect(() => {
         (async () => {
-            const { success, user } = await getUser();
-            if (success && user) {
-                dispatch(setUser(user));
-                dispatch(resetWasLoggedOut());
-                router.push("/");
+            if (success) {
+                await successLoginHandle();
+                return;
+            }
+
+            if (error) {
+                errorLoginHandle(error);
             }
         })();
-    }, [success, user, dispatch, router]);
+    }, [success, error, successLoginHandle, errorLoginHandle]);
 
     return (
         <form className="space-y-3" action={formAction}>
-            {error && (
-                <div className="w-full">
-                    <p className="text-sm text-red-700 break-words">{error}</p>
-                </div>
-            )}
-
             <Input
                 type="email"
                 id="email"
