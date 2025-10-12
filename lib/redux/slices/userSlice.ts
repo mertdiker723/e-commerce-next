@@ -8,7 +8,7 @@ type User = {
 
 const initialState: { user: User | null; wasLoggedOut: boolean } = {
     user: null,
-    wasLoggedOut: false, // Track if the user was logged out
+    wasLoggedOut: false,
 };
 
 const authSlice = createSlice({

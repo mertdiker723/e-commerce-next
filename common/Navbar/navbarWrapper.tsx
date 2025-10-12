@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -9,45 +9,50 @@ import UserNavbar from "@/common/Navbar";
 
 // Libs
 import { RootState } from "@/lib/redux/store";
-import { logout, resetWasLoggedOut, setUser } from "@/lib/redux/slices/userSlice";
+import { logout, setUser } from "@/lib/redux/slices/userSlice";
 
 // Core
 import { FORGOTPASSWORD, LOGIN, REGISTER } from "@/core/routeConstants";
 
 // Services
-import { getUser } from "@/services/auth.services";
-
-// Helpers
+import { getUser, logoutUser } from "@/services/auth.services";
+import toast from "react-hot-toast";
 
 const unShownPaths = [LOGIN, REGISTER, FORGOTPASSWORD];
 
 const NavbarWrapper = () => {
     const dispatch = useDispatch();
-    const { user, wasLoggedOut } = useSelector((state: RootState) => state.auth);
     const pathname = usePathname();
     const router = useRouter();
+
+    const { user, wasLoggedOut } = useSelector((state: RootState) => state.auth);
+
+    const userHandle = useCallback(async () => {
+        const { success, user: userResult, error } = await getUser();
+
+        if (success && userResult) {
+            dispatch(setUser(userResult));
+            return;
+        }
+
+        if (error) {
+            toast.error(error);
+            await logoutUser();
+
+            dispatch(logout());
+            router.push(LOGIN);
+        }
+    }, [dispatch, router]);
 
     useEffect(() => {
         (async () => {
             if (unShownPaths.includes(pathname)) return;
-            if (!user && !wasLoggedOut) {
-                try {
-                    const result = await getUser();
 
-                    if (result.success && result.user) {
-                        dispatch(setUser(result.user));
-                        return;
-                    }
-                    // if user api fail, what to do ??
-                    dispatch(resetWasLoggedOut());
-                    dispatch(logout());
-                    router.push(LOGIN);
-                } catch {
-                    console.log("getUser error");
-                }
+            if (!user && !wasLoggedOut) {
+                await userHandle();
             }
         })();
-    }, [user, dispatch, pathname, wasLoggedOut, router]);
+    }, [user, pathname, wasLoggedOut, router, userHandle, dispatch]);
 
     const shouldHideNavbar = !user || unShownPaths.includes(pathname);
 

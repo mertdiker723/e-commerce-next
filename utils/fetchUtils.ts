@@ -1,6 +1,6 @@
 import { logoutUser } from "@/services/auth.services";
 import { store } from "@/lib/redux/store";
-import { logout, resetWasLoggedOut } from "@/lib/redux/slices/userSlice";
+import { logout } from "@/lib/redux/slices/userSlice";
 
 interface FetchOptions {
     method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -32,7 +32,6 @@ export const fetchApi = async <T = unknown>(
         if (response.status === 401 || response.status === 403) {
             await logoutUser();
             store.dispatch(logout());
-            store.dispatch(resetWasLoggedOut());
         }
 
         const errorData = await response.json();

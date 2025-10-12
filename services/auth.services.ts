@@ -18,7 +18,7 @@ export const getUser = async (): Promise<LoginState> => {
         });
 
         const data = await res.json();
-
+        
         if (res.ok) {
             return {
                 error: "",
