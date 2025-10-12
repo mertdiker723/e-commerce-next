@@ -1,7 +1,7 @@
 "use client";
 
 // Libraries
-import { useActionState, useEffect } from "react";
+import { useActionState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 
@@ -24,14 +24,18 @@ const Register = () => {
 
     const router = useRouter();
 
-    const { error, success } = state;
+    const { error, success, user: userState } = state;
+
+    const successRegisterHandle = useCallback(async () => {
+        router.push("/");
+        dispatch(resetWasLoggedOut());
+    }, [router, dispatch]);
 
     useEffect(() => {
-        if (success) {
-            router.push("/");
-            dispatch(resetWasLoggedOut());
+        if (success && userState) {
+            successRegisterHandle();
         }
-    }, [success, router, dispatch]);
+    }, [success, userState, successRegisterHandle]);
 
     return (
         <>
