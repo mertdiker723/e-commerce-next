@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 // Components
 import RetailerImage from "@/components/retailer/retailerImage";
@@ -35,7 +36,6 @@ import { Province } from "@/models/province.model";
 import { Product } from "@/models/product.model";
 import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
-import toast from "react-hot-toast";
 
 interface RetailerPageProps {
     retailerId: string;

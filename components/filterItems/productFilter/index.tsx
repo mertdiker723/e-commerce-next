@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 // Common
@@ -14,13 +13,7 @@ import { Brand } from "@/models/brand.model";
 import { Province } from "@/models/province.model";
 import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
-
-// Hooks
-import { useMergeState } from "@/hooks/useMergeState";
-
-type ProductFilterState = {
-    stockStatus: string;
-};
+import { StockStatus } from "@/types/general.enum";
 
 const ProductFilter = ({
     filterValues,
@@ -33,31 +26,13 @@ const ProductFilter = ({
         provinces: Province[];
         districts: District[];
         neighborhoods: Neighborhood[];
-        handleFilter?: (entries: Record<string, string | null>) => void;
     };
     handleFilter: (entries: Record<string, string | null>) => void;
 }) => {
     const { retailers, categories, brands, provinces, districts, neighborhoods } =
         filterValues || {};
 
-    const [state, setState] = useMergeState<ProductFilterState>({
-        stockStatus: "",
-    });
-
     const searchParams = useSearchParams();
-
-    useEffect(() => {
-        if (searchParams) {
-            setState({ stockStatus: searchParams.get("stockStatus") || "" });
-        }
-    }, [searchParams, setState]);
-
-    const handleStockStatusChange = (value: string) => {
-        const newValue = value === state.stockStatus ? "" : value;
-
-        setState({ stockStatus: newValue });
-        handleFilter({ stockStatus: newValue });
-    };
 
     return (
         <>
@@ -171,20 +146,36 @@ const ProductFilter = ({
 
                 <div className="mb-3 lg:mb-4">
                     <Checkbox
-                        id="inStock"
+                        id={StockStatus.IN_STOCK}
                         name="stockStatus"
-                        checked={state.stockStatus === "inStock"}
-                        onChange={() => handleStockStatusChange("inStock")}
+                        checked={searchParams.get("stockStatus") === StockStatus.IN_STOCK}
+                        onChange={() => {
+                            const currentValue = searchParams.get("stockStatus");
+                            handleFilter({
+                                stockStatus:
+                                    currentValue === StockStatus.IN_STOCK
+                                        ? null
+                                        : StockStatus.IN_STOCK,
+                            });
+                        }}
                         label="In Stock"
                     />
                 </div>
 
                 <div className="mb-3 lg:mb-4">
                     <Checkbox
-                        id="outOfStock"
+                        id={StockStatus.OUT_OF_STOCK}
                         name="stockStatus"
-                        checked={state.stockStatus === "outOfStock"}
-                        onChange={() => handleStockStatusChange("outOfStock")}
+                        checked={searchParams.get("stockStatus") === StockStatus.OUT_OF_STOCK}
+                        onChange={() => {
+                            const currentValue = searchParams.get("stockStatus");
+                            handleFilter({
+                                stockStatus:
+                                    currentValue === StockStatus.OUT_OF_STOCK
+                                        ? null
+                                        : StockStatus.OUT_OF_STOCK,
+                            });
+                        }}
                         label="Out of Stock"
                     />
                 </div>
