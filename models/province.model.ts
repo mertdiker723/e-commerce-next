@@ -3,3 +3,8 @@ export interface Province {
     name: string;
 }
 
+export interface ProvinceDropdownResponse {
+    data: Province[];
+    success: boolean;
+    message?: string;
+}

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 // Common
 import { Table } from "@/common/Table";
@@ -23,6 +24,7 @@ import { productService } from "@/services/product.service";
 import { brandService } from "@/services/brand.services";
 import { retailerService } from "@/services/retailer.services";
 import { categoryService } from "@/services/category.services";
+import { locationService } from "@/services/location.services";
 
 // Models
 import { Category } from "@/models/category.model";
@@ -30,7 +32,6 @@ import { Brand } from "@/models/brand.model";
 import { Province } from "@/models/province.model";
 import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
-import { locationService } from "@/services/location.services";
 
 type ProductState = {
     products: Product[];
@@ -82,24 +83,37 @@ const ProductPage = () => {
 
     useEffect(() => {
         (async () => {
-            try {
-                const [retailersData, categoriesData, brandsData, provincesData] =
-                    await Promise.all([
-                        retailerService.getRetailersDropdown(),
-                        categoryService.getCategoriesDropdown(),
-                        brandService.getBrandsDropdown(),
-                        locationService.getProvinces(),
-                    ]);
-
-                setState({
-                    retailers: retailersData.data,
-                    categories: categoriesData.data,
-                    brands: brandsData.data,
-                    provinces: provincesData,
+            await Promise.all([
+                retailerService.getRetailersDropdown(),
+                categoryService.getCategoriesDropdown(),
+                brandService.getBrandsDropdown(),
+                locationService.getProvinces(),
+            ])
+                .then(([retailersData, categoriesData, brandsData, provincesData]) => {
+                    if (!retailersData.success) {
+                        toast.error(retailersData.message as string);
+                    }
+                    if (!categoriesData.success) {
+                        toast.error(categoriesData.message as string);
+                    }
+                    if (!brandsData.success) {
+                        toast.error(brandsData.message as string);
+                    }
+                    if (!provincesData.success) {
+                        toast.error(provincesData.message as string);
+                    }
+                    setState({
+                        retailers: retailersData.data,
+                        categories: categoriesData.data,
+                        brands: brandsData.data,
+                        provinces: provincesData.data,
+                    });
+                })
+                .catch((error) => {
+                    toast.error(
+                        error instanceof Error ? error.message : "Failed to load filter data"
+                    );
                 });
-            } catch (error) {
-                console.error("Data loading error:", error);
-            }
         })();
     }, [setState]);
 
@@ -123,23 +137,43 @@ const ProductPage = () => {
 
     useEffect(() => {
         (async () => {
-            if (provinceId) {
-                const districts = await locationService.getDistricts(Number(provinceId));
-                setState({ districts, neighborhoods: [] });
-            } else {
+            if (!provinceId) {
                 setState({ districts: [], neighborhoods: [] });
+                return;
             }
+
+            const { data, success, message } = await locationService.getDistricts(
+                Number(provinceId)
+            );
+
+            if (!success) {
+                toast.error(message as string);
+                setState({ districts: [], neighborhoods: [] });
+                return;
+            }
+
+            setState({ districts: data, neighborhoods: [] });
         })();
     }, [provinceId, setState]);
 
     useEffect(() => {
         (async () => {
-            if (districtId && provinceId) {
-                const neighborhoods = await locationService.getNeighborhoods(Number(districtId));
-                setState({ neighborhoods });
-            } else {
+            if (!districtId || !provinceId) {
                 setState({ neighborhoods: [] });
+                return;
             }
+
+            const { data, success, message } = await locationService.getNeighborhoods(
+                Number(districtId)
+            );
+
+            if (!success) {
+                toast.error(message as string);
+                setState({ neighborhoods: [] });
+                return;
+            }
+
+            setState({ neighborhoods: data });
         })();
     }, [districtId, provinceId, setState]);
 

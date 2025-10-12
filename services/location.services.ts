@@ -1,42 +1,49 @@
+// Utils
 import { fetchApi } from "@/utils/fetchUtils";
-import { Province } from "@/models/province.model";
-import { District } from "@/models/district.model";
-import { Neighborhood } from "@/models/neighborhood.model";
+
+// Models
+import { ProvinceDropdownResponse } from "@/models/province.model";
+import { DistrictsDropdownResponse } from "@/models/district.model";
+import { NeighborhoodsDropdownResponse } from "@/models/neighborhood.model";
 
 class LocationService {
     // Get all provinces
-    async getProvinces(): Promise<Province[]> {
+    async getProvinces(): Promise<ProvinceDropdownResponse> {
         try {
-            const { data } = await fetchApi<{ data: Province[] }>(
+            const { data, success, message } = await fetchApi<ProvinceDropdownResponse>(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/location/provinces`
             );
-            return data;
-        } catch {
-            return [];
+            return { data, success, message };
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Failed to get provinces";
+            return { data: [], success: false, message };
         }
     }
 
     // Get all districts
-    async getDistricts(provinceId: number): Promise<District[]> {
+    async getDistricts(provinceId: number): Promise<DistrictsDropdownResponse> {
         try {
-            const { data } = await fetchApi<{ data: District[] }>(
+            const { data, success, message } = await fetchApi<DistrictsDropdownResponse>(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/location/districts/${provinceId}`
             );
-            return data;
-        } catch {
-            return [];
+            return { data, success, message };
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Failed to get districts";
+            return { data: [], success: false, message };
         }
     }
 
     // Get all neighborhoods
-    async getNeighborhoods(districtId: number): Promise<Neighborhood[]> {
+    async getNeighborhoods(districtId: number): Promise<NeighborhoodsDropdownResponse> {
         try {
-            const { data } = await fetchApi<{ data: Neighborhood[] }>(
+            const { data, success, message } = await fetchApi<NeighborhoodsDropdownResponse>(
                 `${process.env.NEXT_PUBLIC_BASE_URL}/location/neighborhoods/${districtId}`
             );
-            return data;
-        } catch {
-            return [];
+            return { data, success, message };
+        } catch (error) {
+            const message =
+                error instanceof Error ? error.message : "Failed to get neighborhoods";
+            return { data: [], success: false, message };
         }
     }
 }

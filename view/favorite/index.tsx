@@ -11,9 +11,6 @@ import Table from "@/common/Table";
 // Hooks
 import { useMergeState } from "@/hooks/useMergeState";
 
-// Services
-import { favoriteService } from "@/services/favorite.service";
-
 // Models
 import { Favorite } from "@/models/favorite.model";
 import { RetailerDropdown } from "@/models/retailer.model";
@@ -28,6 +25,7 @@ import { SecondColumn } from "@/components/product/listing/SecondColumn";
 import { brandService } from "@/services/brand.services";
 import { retailerService } from "@/services/retailer.services";
 import { categoryService } from "@/services/category.services";
+import { favoriteService } from "@/services/favorite.service";
 
 type FavoriteState = {
     favorites: Favorite[];
@@ -94,23 +92,32 @@ const FavoritePage = () => {
 
     useEffect(() => {
         (async () => {
-            try {
-                const [retailersResponse, categoriesResponse, brandsResponse] = await Promise.all([
-                    retailerService.getRetailersDropdown(),
-                    categoryService.getCategoriesDropdown(),
-                    brandService.getBrandsDropdown(),
-                ]);
-
-                setState({
-                    retailers: retailersResponse.data,
-                    categories: categoriesResponse.data,
-                    brands: brandsResponse.data,
+            await Promise.all([
+                retailerService.getRetailersDropdown(),
+                categoryService.getCategoriesDropdown(),
+                brandService.getBrandsDropdown(),
+            ])
+                .then(([retailersResponse, categoriesResponse, brandsResponse]) => {
+                    if (!retailersResponse.success) {
+                        toast.error(retailersResponse.message as string);
+                    }
+                    if (!categoriesResponse.success) {
+                        toast.error(categoriesResponse.message as string);
+                    }
+                    if (!brandsResponse.success) {
+                        toast.error(brandsResponse.message as string);
+                    }
+                    setState({
+                        retailers: retailersResponse.data || [],
+                        categories: categoriesResponse.data || [],
+                        brands: brandsResponse.data || [],
+                    });
+                })
+                .catch((error) => {
+                    toast.error(
+                        error instanceof Error ? error.message : "Failed to load filter data"
+                    );
                 });
-            } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : "Data loading error";
-                toast.error(errorMessage);
-                setState({ errorMessage });
-            }
         })();
     }, [setState]);
 
