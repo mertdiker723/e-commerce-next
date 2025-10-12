@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import RetailerPage from "@/view/retailer";
 
 interface RetailerPageProps {
@@ -6,7 +7,11 @@ interface RetailerPageProps {
 
 const Retailer = async ({ params }: RetailerPageProps) => {
     const { id } = await params;
-    return <RetailerPage retailerId={id} />;
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <RetailerPage retailerId={id} />
+        </Suspense>
+    );
 };
 
 export default Retailer;
