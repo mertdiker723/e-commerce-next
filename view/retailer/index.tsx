@@ -35,6 +35,7 @@ import { Province } from "@/models/province.model";
 import { Product } from "@/models/product.model";
 import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
+import toast from "react-hot-toast";
 
 interface RetailerPageProps {
     retailerId: string;
@@ -123,21 +124,32 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
 
     useEffect(() => {
         (async () => {
-            try {
-                const [categoriesData, brandsData, provincesData] = await Promise.all([
-                    categoryService.getCategoriesDropdown(),
-                    brandService.getBrandsDropdown(),
-                    locationService.getProvinces(),
-                ]);
-
-                setState({
-                    categories: categoriesData.data,
-                    brands: brandsData.data,
-                    provinces: provincesData,
+            await Promise.all([
+                categoryService.getCategoriesDropdown(),
+                brandService.getBrandsDropdown(),
+                locationService.getProvinces(),
+            ])
+                .then(([categoriesData, brandsData, provincesData]) => {
+                    if (!categoriesData.success) {
+                        toast.error(categoriesData.message as string);
+                    }
+                    if (!brandsData.success) {
+                        toast.error(brandsData.message as string);
+                    }
+                    if (!provincesData.success) {
+                        toast.error(provincesData.message as string);
+                    }
+                    setState({
+                        categories: categoriesData.data,
+                        brands: brandsData.data,
+                        provinces: provincesData.data,
+                    });
+                })
+                .catch((error) => {
+                    toast.error(
+                        error instanceof Error ? error.message : "Failed to load filter data"
+                    );
                 });
-            } catch (error) {
-                console.error("Data loading error:", error);
-            }
         })();
     }, [setState]);
 
@@ -166,23 +178,43 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
 
     useEffect(() => {
         (async () => {
-            if (provinceId) {
-                const districts = await locationService.getDistricts(Number(provinceId));
-                setState({ districts, neighborhoods: [] });
-            } else {
+            if (!provinceId) {
                 setState({ districts: [], neighborhoods: [] });
+                return;
             }
+
+            const { data, success, message } = await locationService.getDistricts(
+                Number(provinceId)
+            );
+
+            if (!success) {
+                toast.error(message as string);
+                setState({ districts: [], neighborhoods: [] });
+                return;
+            }
+
+            setState({ districts: data, neighborhoods: [] });
         })();
     }, [provinceId, setState]);
 
     useEffect(() => {
         (async () => {
-            if (districtId && provinceId) {
-                const neighborhoods = await locationService.getNeighborhoods(Number(districtId));
-                setState({ neighborhoods });
-            } else {
+            if (!districtId || !provinceId) {
                 setState({ neighborhoods: [] });
+                return;
             }
+
+            const { data, success, message } = await locationService.getNeighborhoods(
+                Number(districtId)
+            );
+
+            if (!success) {
+                toast.error(message as string);
+                setState({ neighborhoods: [] });
+                return;
+            }
+
+            setState({ neighborhoods: data });
         })();
     }, [districtId, provinceId, setState]);
 
