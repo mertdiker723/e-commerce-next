@@ -12,7 +12,7 @@ interface FirstColumnProps {
 }
 
 export const FirstColumn = ({ productData, favoriteCreatedAt }: FirstColumnProps) => {
-    const { image, name, description, brand, category, createdBy } = productData || {};
+    const { image, name, description, brand, category, subCategory, createdBy } = productData || {};
 
     const { thumbnailUrl } = image || {};
     const {
@@ -26,6 +26,7 @@ export const FirstColumn = ({ productData, favoriteCreatedAt }: FirstColumnProps
 
     const { name: brandName } = brand || {};
     const { name: categoryName } = category || {};
+    const { name: subCategoryName } = subCategory || {};
     const { name: districtName } = district || {};
     const { name: neighborhoodName } = neighborhood || {};
     const { name: provinceName } = province || {};
@@ -72,15 +73,26 @@ export const FirstColumn = ({ productData, favoriteCreatedAt }: FirstColumnProps
                 <div className="flex items-center gap-2 mb-3">
                     {categoryName && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
-                            Category: {categoryName}
+                            <span className="text-blue-600 mr-1">Category:</span>
+                            {categoryName}
                         </span>
                     )}
+
                     {brandName && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
-                            Brand: {brandName}
+                            <span className="text-blue-600 mr-1">Brand:</span> {brandName}
                         </span>
                     )}
                 </div>
+
+                {subCategoryName && (
+                    <div className="flex items-center gap-2 mb-3">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-300">
+                            <span className="text-blue-600 mr-1">Sub Category:</span>{" "}
+                            {subCategoryName}
+                        </span>
+                    </div>
+                )}
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 text-sm text-gray-600">
                     {neighborhoodName && districtName && provinceName && (

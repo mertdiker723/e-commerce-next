@@ -33,7 +33,6 @@ const SelectBox = ({
 
     const handleClearSelection = () => {
         setSelectedValue("");
-        onChange?.("");
         onClearChange?.();
     };
 

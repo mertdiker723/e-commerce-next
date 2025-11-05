@@ -2,10 +2,10 @@ import { fetchApi } from "@/utils/fetchUtils";
 import { BrandDropdownResponse } from "@/models/brand.model";
 
 export class BrandService {
-    async getBrandsDropdown(): Promise<BrandDropdownResponse> {
+    async getBrandsDropdown(categoryId: string): Promise<BrandDropdownResponse> {
         try {
             const { data, success, message } = await fetchApi<BrandDropdownResponse>(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/dropdown/brands`
+                `${process.env.NEXT_PUBLIC_BASE_URL}/dropdown/brands/${categoryId}`
             );
             return { data, success, message };
         } catch (error) {

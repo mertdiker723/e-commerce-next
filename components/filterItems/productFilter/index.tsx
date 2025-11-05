@@ -14,6 +14,7 @@ import { Province } from "@/models/province.model";
 import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
 import { StockStatus } from "@/types/general.enum";
+import { SubCategory } from "@/models/subCategory.model";
 
 const ProductFilter = ({
     filterValues,
@@ -26,10 +27,11 @@ const ProductFilter = ({
         provinces: Province[];
         districts: District[];
         neighborhoods: Neighborhood[];
+        subCategories: SubCategory[];
     };
     handleFilter: (entries: Record<string, string | null>) => void;
 }) => {
-    const { retailers, categories, brands, provinces, districts, neighborhoods } =
+    const { retailers, categories, brands, provinces, districts, neighborhoods, subCategories } =
         filterValues || {};
 
     const searchParams = useSearchParams();
@@ -46,6 +48,9 @@ const ProductFilter = ({
                     }))}
                     value={searchParams.get("retailer") || ""}
                     onChange={(value) => handleFilter({ retailer: value as string })}
+                    onClearChange={() => {
+                        handleFilter({ retailer: null });
+                    }}
                 />
             </div>
 
@@ -58,7 +63,28 @@ const ProductFilter = ({
                         value: category._id,
                     }))}
                     value={searchParams.get("category") || ""}
-                    onChange={(value) => handleFilter({ category: value as string })}
+                    onChange={(value) =>
+                        handleFilter({ category: value as string, subCategory: null })
+                    }
+                    onClearChange={() => {
+                        handleFilter({ category: null, subCategory: null });
+                    }}
+                />
+            </div>
+
+            <div className="mb-3 lg:mb-4">
+                <SelectBox
+                    label="Sub Categories"
+                    placeholder="Select a subcategory"
+                    options={subCategories.map((subCategory) => ({
+                        label: subCategory.name,
+                        value: subCategory._id,
+                    }))}
+                    value={searchParams.get("subCategory") || ""}
+                    onChange={(value) => handleFilter({ subCategory: value as string })}
+                    onClearChange={() => {
+                        handleFilter({ subCategory: null });
+                    }}
                 />
             </div>
 
@@ -72,6 +98,9 @@ const ProductFilter = ({
                     }))}
                     value={searchParams.get("brand") || ""}
                     onChange={(value) => handleFilter({ brand: value as string })}
+                    onClearChange={() => {
+                        handleFilter({ brand: null });
+                    }}
                 />
             </div>
 

@@ -25,6 +25,7 @@ import { brandService } from "@/services/brand.services";
 import { retailerService } from "@/services/retailer.services";
 import { categoryService } from "@/services/category.services";
 import { locationService } from "@/services/location.services";
+import { subCategoryService } from "@/services/subCategory.services";
 
 // Models
 import { Category } from "@/models/category.model";
@@ -32,6 +33,7 @@ import { Brand } from "@/models/brand.model";
 import { Province } from "@/models/province.model";
 import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
+import { SubCategory } from "@/models/subCategory.model";
 
 type ProductState = {
     products: Product[];
@@ -41,6 +43,7 @@ type ProductState = {
     provinces: Province[];
     districts: District[];
     neighborhoods: Neighborhood[];
+    subCategories: SubCategory[];
     productLoader: boolean;
     errorMessage: string | null;
     totalCount: number;
@@ -56,6 +59,7 @@ const ProductPage = () => {
         provinces: [],
         districts: [],
         neighborhoods: [],
+        subCategories: [],
         productLoader: true,
         errorMessage: null,
         totalCount: 0,
@@ -70,6 +74,7 @@ const ProductPage = () => {
         provinces = [],
         districts = [],
         neighborhoods = [],
+        subCategories = [],
         productLoader,
         errorMessage,
         totalCount,
@@ -80,32 +85,29 @@ const ProductPage = () => {
 
     const provinceId = useMemo(() => searchParams?.get("province"), [searchParams]);
     const districtId = useMemo(() => searchParams?.get("district"), [searchParams]);
+    const categoryId = useMemo(() => searchParams?.get("category"), [searchParams]);
 
     useEffect(() => {
         (async () => {
             await Promise.all([
                 retailerService.getRetailersDropdown(),
                 categoryService.getCategoriesDropdown(),
-                brandService.getBrandsDropdown(),
                 locationService.getProvinces(),
             ])
-                .then(([retailersData, categoriesData, brandsData, provincesData]) => {
+                .then(([retailersData, categoriesData, provincesData]) => {
                     if (!retailersData.success) {
                         toast.error(retailersData.message as string);
                     }
                     if (!categoriesData.success) {
                         toast.error(categoriesData.message as string);
                     }
-                    if (!brandsData.success) {
-                        toast.error(brandsData.message as string);
-                    }
+
                     if (!provincesData.success) {
                         toast.error(provincesData.message as string);
                     }
                     setState({
                         retailers: retailersData.data,
                         categories: categoriesData.data,
-                        brands: brandsData.data,
                         provinces: provincesData.data,
                     });
                 })
@@ -134,6 +136,32 @@ const ProductPage = () => {
             });
         })();
     }, [searchParams, setState]);
+
+    useEffect(() => {
+        (async () => {
+            if (!categoryId) {
+                setState({ subCategories: [], brands: [] });
+                return;
+            }
+
+            const [subCategoriesData, brandsData] = await Promise.all([
+                subCategoryService.getSubCategoriesDropdown(categoryId as string),
+                brandService.getBrandsDropdown(categoryId as string),
+            ]);
+
+            if (!subCategoriesData.success) {
+                toast.error(subCategoriesData.message as string);
+                setState({ subCategories: [] });
+                return;
+            }
+            if (!brandsData.success) {
+                toast.error(brandsData.message as string);
+                setState({ brands: [] });
+                return;
+            }
+            setState({ subCategories: subCategoriesData.data, brands: brandsData.data });
+        })();
+    }, [categoryId, setState]);
 
     useEffect(() => {
         (async () => {
@@ -184,6 +212,7 @@ const ProductPage = () => {
         provinces,
         districts,
         neighborhoods,
+        subCategories,
     };
 
     return (

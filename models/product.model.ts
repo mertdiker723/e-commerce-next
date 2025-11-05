@@ -3,6 +3,7 @@ import { Brand } from "./brand.model";
 import { Category } from "./category.model";
 import { Retailer } from "./retailer.model";
 import { Image } from "./shared/index.model";
+import { SubCategory } from "./subCategory.model";
 
 export interface Product {
     image?: Image | null;
@@ -12,6 +13,7 @@ export interface Product {
     price: number;
     stock: number;
     category: Category;
+    subCategory: SubCategory;
     brand: Brand;
     status: boolean;
     createdBy: Retailer;
