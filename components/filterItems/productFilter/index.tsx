@@ -67,7 +67,7 @@ const ProductFilter = ({
                         handleFilter({ category: value as string, subCategory: null })
                     }
                     onClearChange={() => {
-                        handleFilter({ category: null, subCategory: null });
+                        handleFilter({ category: null, brand: null, subCategory: null });
                     }}
                 />
             </div>

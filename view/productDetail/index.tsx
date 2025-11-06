@@ -29,6 +29,7 @@ const ProductDetailPage = ({ data, isFavorited, message, statusCode }: ProductDe
         updatedAt,
         brand,
         category,
+        subCategory,
         createdBy,
         _id,
     } = data || {};
@@ -52,7 +53,7 @@ const ProductDetailPage = ({ data, isFavorited, message, statusCode }: ProductDe
     const { name: provinceName } = province || {};
     const { name: brandName } = brand || {};
     const { name: categoryName } = category || {};
-
+    const { name: subCategoryName } = subCategory || {};
     const breadcrumbItems: BreadcrumbItem[] = [
         { label: "Products", href: "/product" },
         { label: `Product Detail: ${data?.name}` },
@@ -78,6 +79,7 @@ const ProductDetailPage = ({ data, isFavorited, message, statusCode }: ProductDe
                                     updatedAt={updatedAt}
                                     brandName={brandName}
                                     categoryName={categoryName}
+                                    subCategoryName={subCategoryName}
                                     description={description}
                                     price={price}
                                     stock={stock}

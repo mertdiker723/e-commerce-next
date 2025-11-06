@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -16,6 +16,7 @@ import { Favorite } from "@/models/favorite.model";
 import { RetailerDropdown } from "@/models/retailer.model";
 import { Category } from "@/models/category.model";
 import { Brand } from "@/models/brand.model";
+import { SubCategory } from "@/models/subCategory.model";
 
 // Components
 import { FirstColumn } from "@/components/product/listing/FirstColumn";
@@ -26,6 +27,7 @@ import { brandService } from "@/services/brand.services";
 import { retailerService } from "@/services/retailer.services";
 import { categoryService } from "@/services/category.services";
 import { favoriteService } from "@/services/favorite.service";
+import { subCategoryService } from "@/services/subCategory.services";
 
 type FavoriteState = {
     favorites: Favorite[];
@@ -36,6 +38,7 @@ type FavoriteState = {
     totalPages: number;
     categories: Category[];
     brands: Brand[];
+    subCategories: SubCategory[];
 };
 
 const FavoritePage = () => {
@@ -46,6 +49,7 @@ const FavoritePage = () => {
         retailers: [],
         categories: [],
         brands: [],
+        subCategories: [],
         totalCount: 0,
         totalPages: 0,
     });
@@ -59,9 +63,12 @@ const FavoritePage = () => {
         retailers,
         categories,
         brands,
+        subCategories,
     } = state || {};
 
     const searchParams = useSearchParams();
+
+    const categoryId = useMemo(() => searchParams?.get("category"), [searchParams]);
 
     const handleDelete = async (favoriteId: string) => {
         const { success, message } = await favoriteService.deleteFavorite(favoriteId);
@@ -95,22 +102,17 @@ const FavoritePage = () => {
             await Promise.all([
                 retailerService.getRetailersDropdown(),
                 categoryService.getCategoriesDropdown(),
-                brandService.getBrandsDropdown(),
             ])
-                .then(([retailersResponse, categoriesResponse, brandsResponse]) => {
+                .then(([retailersResponse, categoriesResponse]) => {
                     if (!retailersResponse.success) {
                         toast.error(retailersResponse.message as string);
                     }
                     if (!categoriesResponse.success) {
                         toast.error(categoriesResponse.message as string);
                     }
-                    if (!brandsResponse.success) {
-                        toast.error(brandsResponse.message as string);
-                    }
                     setState({
                         retailers: retailersResponse.data || [],
                         categories: categoriesResponse.data || [],
-                        brands: brandsResponse.data || [],
                     });
                 })
                 .catch((error) => {
@@ -122,6 +124,42 @@ const FavoritePage = () => {
     }, [setState]);
 
     useEffect(() => {
+        (async () => {
+            if (!categoryId) {
+                setState({ subCategories: [] });
+                return;
+            }
+            const { data, success, message } = await subCategoryService.getSubCategoriesDropdown(
+                categoryId as string
+            );
+            if (!success) {
+                toast.error(message as string);
+                setState({ subCategories: [] });
+                return;
+            }
+            setState({ subCategories: data });
+        })();
+    }, [categoryId, setState]);
+
+    useEffect(() => {
+        (async () => {
+            if (!categoryId) {
+                setState({ brands: [] });
+                return;
+            }
+            const { data, success, message } = await brandService.getBrandsDropdown(
+                categoryId as string
+            );
+            if (!success) {
+                toast.error(message as string);
+                setState({ brands: [] });
+                return;
+            }
+            setState({ brands: data });
+        })();
+    }, [categoryId, setState]);
+
+    useEffect(() => {
         getFavorites();
     }, [getFavorites]);
 
@@ -129,6 +167,7 @@ const FavoritePage = () => {
         retailers,
         categories,
         brands,
+        subCategories,
     };
 
     return (

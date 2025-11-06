@@ -11,6 +11,7 @@ import { Retailer } from "@/models/retailer.model";
 import { Category } from "@/models/category.model";
 import { Brand } from "@/models/brand.model";
 import { StockStatus } from "@/types/general.enum";
+import { SubCategory } from "@/models/subCategory.model";
 
 // Hooks
 
@@ -22,10 +23,11 @@ const FavoriteFilter = ({
         retailers: Retailer[];
         categories: Category[];
         brands: Brand[];
+        subCategories: SubCategory[];
     };
     handleFilter: (entries: Record<string, string | null>) => void;
 }) => {
-    const { retailers, categories, brands } = filterValues || {};
+    const { retailers, categories, brands, subCategories } = filterValues || {};
 
     const searchParams = useSearchParams();
 
@@ -41,9 +43,11 @@ const FavoriteFilter = ({
                     }))}
                     value={searchParams.get("retailer") || ""}
                     onChange={(value) => handleFilter({ retailer: value as string })}
+                    onClearChange={() => {
+                        handleFilter({ retailer: null });
+                    }}
                 />
             </div>
-
             <div className="mb-3 lg:mb-4">
                 <SelectBox
                     label="Categories"
@@ -54,6 +58,24 @@ const FavoriteFilter = ({
                     }))}
                     value={searchParams.get("category") || ""}
                     onChange={(value) => handleFilter({ category: value as string })}
+                    onClearChange={() => {
+                        handleFilter({ category: null, subCategory: null, brand: null });
+                    }}
+                />
+            </div>
+            <div className="mb-3 lg:mb-4">
+                <SelectBox
+                    label="Sub Categories"
+                    placeholder="Select a sub category"
+                    options={subCategories.map((subCategory) => ({
+                        label: subCategory.name,
+                        value: subCategory._id,
+                    }))}
+                    value={searchParams.get("subCategory") || ""}
+                    onChange={(value) => handleFilter({ subCategory: value as string })}
+                    onClearChange={() => {
+                        handleFilter({ subCategory: null });
+                    }}
                 />
             </div>
 
@@ -67,6 +89,9 @@ const FavoriteFilter = ({
                     }))}
                     value={searchParams.get("brand") || ""}
                     onChange={(value) => handleFilter({ brand: value as string })}
+                    onClearChange={() => {
+                        handleFilter({ brand: null });
+                    }}
                 />
             </div>
 

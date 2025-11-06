@@ -13,6 +13,7 @@ import { Province } from "@/models/province.model";
 import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
 import { StockStatus } from "@/types/general.enum";
+import { SubCategory } from "@/models/subCategory.model";
 
 // Hooks
 
@@ -26,10 +27,12 @@ const RetailerFilter = ({
         provinces: Province[];
         districts: District[];
         neighborhoods: Neighborhood[];
+        subCategories: SubCategory[];
     };
     handleFilter: (entries: Record<string, string | null>) => void;
 }) => {
-    const { categories, brands, provinces, districts, neighborhoods } = filterValues || {};
+    const { categories, brands, provinces, districts, neighborhoods, subCategories } =
+        filterValues || {};
 
     const searchParams = useSearchParams();
 
@@ -45,9 +48,27 @@ const RetailerFilter = ({
                     }))}
                     value={searchParams.get("category") || ""}
                     onChange={(value) => handleFilter({ category: value as string })}
+                    onClearChange={() => {
+                        handleFilter({ category: null, subCategory: null, brand: null });
+                    }}
                 />
             </div>
 
+            <div className="mb-3 lg:mb-4">
+                <SelectBox
+                    label="Sub Categories"
+                    placeholder="Select a sub category"
+                    options={subCategories.map((subCategory) => ({
+                        label: subCategory.name,
+                        value: subCategory._id,
+                    }))}
+                    value={searchParams.get("subCategory") || ""}
+                    onChange={(value) => handleFilter({ subCategory: value as string })}
+                    onClearChange={() => {
+                        handleFilter({ subCategory: null });
+                    }}
+                />
+            </div>
             <div className="mb-3 lg:mb-4">
                 <SelectBox
                     label="Brands"
@@ -58,6 +79,9 @@ const RetailerFilter = ({
                     }))}
                     value={searchParams.get("brand") || ""}
                     onChange={(value) => handleFilter({ brand: value as string })}
+                    onClearChange={() => {
+                        handleFilter({ brand: null });
+                    }}
                 />
             </div>
 

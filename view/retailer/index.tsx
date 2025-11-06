@@ -24,6 +24,7 @@ import { locationService } from "@/services/location.services";
 import { categoryService } from "@/services/category.services";
 import { brandService } from "@/services/brand.services";
 import { productService } from "@/services/product.service";
+import { subCategoryService } from "@/services/subCategory.services";
 
 // Hooks
 import { useMergeState } from "@/hooks/useMergeState";
@@ -36,6 +37,7 @@ import { Province } from "@/models/province.model";
 import { Product } from "@/models/product.model";
 import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
+import { SubCategory } from "@/models/subCategory.model";
 
 interface RetailerPageProps {
     retailerId: string;
@@ -51,6 +53,7 @@ type RetailerState = {
     provinces: Province[];
     districts: District[];
     neighborhoods: Neighborhood[];
+    subCategories: SubCategory[];
     productLoader: boolean;
     products: Product[];
     totalCount: number;
@@ -68,6 +71,7 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
         provinces: [],
         districts: [],
         neighborhoods: [],
+        subCategories: [],
         productLoader: true,
         products: [],
         totalCount: 0,
@@ -84,6 +88,7 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
         provinces,
         districts,
         neighborhoods,
+        subCategories,
         productLoader,
         products,
         totalCount,
@@ -107,6 +112,7 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
 
     const provinceId = useMemo(() => searchParams?.get("province"), [searchParams]);
     const districtId = useMemo(() => searchParams?.get("district"), [searchParams]);
+    const categoryId = useMemo(() => searchParams?.get("category"), [searchParams]);
 
     useEffect(() => {
         (async () => {
@@ -126,22 +132,17 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
         (async () => {
             await Promise.all([
                 categoryService.getCategoriesDropdown(),
-                brandService.getBrandsDropdown(),
                 locationService.getProvinces(),
             ])
-                .then(([categoriesData, brandsData, provincesData]) => {
+                .then(([categoriesData, provincesData]) => {
                     if (!categoriesData.success) {
                         toast.error(categoriesData.message as string);
-                    }
-                    if (!brandsData.success) {
-                        toast.error(brandsData.message as string);
                     }
                     if (!provincesData.success) {
                         toast.error(provincesData.message as string);
                     }
                     setState({
                         categories: categoriesData.data,
-                        brands: brandsData.data,
                         provinces: provincesData.data,
                     });
                 })
@@ -152,6 +153,42 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
                 });
         })();
     }, [setState]);
+
+    useEffect(() => {
+        (async () => {
+            if (!categoryId) {
+                setState({ brands: [] });
+                return;
+            }
+            const { data, success, message } = await brandService.getBrandsDropdown(
+                categoryId as string
+            );
+            if (!success) {
+                toast.error(message as string);
+                setState({ brands: [] });
+                return;
+            }
+            setState({ brands: data });
+        })();
+    }, [categoryId, setState]);
+
+    useEffect(() => {
+        (async () => {
+            if (!categoryId) {
+                setState({ subCategories: [] });
+                return;
+            }
+            const { data, success, message } = await subCategoryService.getSubCategoriesDropdown(
+                categoryId as string
+            );
+            if (!success) {
+                toast.error(message as string);
+                setState({ subCategories: [] });
+                return;
+            }
+            setState({ subCategories: data });
+        })();
+    }, [categoryId, setState]);
 
     useEffect(() => {
         (async () => {
@@ -224,11 +261,12 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
         provinces,
         districts,
         neighborhoods,
+        subCategories,
     };
 
     const breadcrumbItems: BreadcrumbItem[] = [
         { label: "Products", href: "/product" },
-        { label: `Retailer: ${businessName}` },
+        { label: `Retailer: ${businessName || "-"}` },
     ];
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">

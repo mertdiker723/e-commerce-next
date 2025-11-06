@@ -15,6 +15,7 @@ type ProductInformationProps = {
     updatedAt?: string;
     brandName?: string;
     categoryName?: string;
+    subCategoryName?: string;
     description?: string | null;
     price?: number;
     stock?: number;
@@ -28,6 +29,7 @@ const ProductInformation = ({
     updatedAt,
     brandName,
     categoryName,
+    subCategoryName,
     description,
     price,
     stock,
@@ -71,20 +73,32 @@ const ProductInformation = ({
                 </div>
             </div>
             <div className="flex items-center space-x-4 mt-3">
-                <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600">Brand:</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                        {brandName}
-                    </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600">Category:</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                        {categoryName}
-                    </span>
-                </div>
-            </div>
+                {categoryName && (
+                    <div className="flex items-center space-x-2">
+                        <span className="text-sm text-gray-600">Category:</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                            {categoryName}
+                        </span>
+                    </div>
+                )}
 
+                {subCategoryName && (
+                    <div className="flex items-center space-x-2">
+                        <span className="text-sm text-gray-600">Sub Category:</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                            {subCategoryName}
+                        </span>
+                    </div>
+                )}
+                {brandName && (
+                    <div className="flex items-center space-x-2">
+                        <span className="text-sm text-gray-600">Brand:</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                            {brandName}
+                        </span>
+                    </div>
+                )}
+            </div>
             {description && (
                 <div className="bg-blue-50 p-4 rounded-lg">
                     <h3 className="text-sm font-semibold text-gray-900 mb-2">Description</h3>
