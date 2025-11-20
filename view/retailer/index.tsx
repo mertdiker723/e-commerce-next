@@ -21,19 +21,18 @@ import { Table } from "@/common/Table";
 // Services
 import { retailerService } from "@/services/retailer.services";
 import { locationService } from "@/services/location.services";
-import { categoryService } from "@/services/category.services";
 import { brandService } from "@/services/brand.services";
 import { productService } from "@/services/product.service";
 import { subCategoryService } from "@/services/subCategory.services";
 
 // Hooks
 import { useMergeState } from "@/hooks/useMergeState";
+import { useProvinces } from "@/lib/react-query/hooks/location/useProvinces";
+import { useCategories } from "@/lib/react-query/hooks/category/useCategories";
 
 // Models
 import { Retailer } from "@/models/retailer.model";
-import { Category } from "@/models/category.model";
 import { Brand } from "@/models/brand.model";
-import { Province } from "@/models/province.model";
 import { Product } from "@/models/product.model";
 import { District } from "@/models/district.model";
 import { Neighborhood } from "@/models/neighborhood.model";
@@ -48,9 +47,7 @@ type RetailerState = {
     errorMessageDetail: string | null;
     errorMessageTable: string | null;
     isLoading: boolean;
-    categories: Category[];
     brands: Brand[];
-    provinces: Province[];
     districts: District[];
     neighborhoods: Neighborhood[];
     subCategories: SubCategory[];
@@ -61,14 +58,19 @@ type RetailerState = {
 };
 
 const RetailerPage = ({ retailerId }: RetailerPageProps) => {
+    // React Query hooks
+    const { data: provincesData } = useProvinces();
+    const provinces = provincesData?.data || [];
+
+    const { data: categoriesData } = useCategories();
+    const categories = categoriesData?.data || [];
+
     const [state, setState] = useMergeState<RetailerState>({
         retailer: {} as Retailer,
         errorMessageDetail: null,
         errorMessageTable: null,
         isLoading: true,
-        categories: [],
         brands: [],
-        provinces: [],
         districts: [],
         neighborhoods: [],
         subCategories: [],
@@ -83,9 +85,7 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
         errorMessageDetail,
         errorMessageTable,
         isLoading,
-        categories,
         brands,
-        provinces,
         districts,
         neighborhoods,
         subCategories,
@@ -128,31 +128,6 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
         })();
     }, [retailerId, setState]);
 
-    useEffect(() => {
-        (async () => {
-            await Promise.all([
-                categoryService.getCategoriesDropdown(),
-                locationService.getProvinces(),
-            ])
-                .then(([categoriesData, provincesData]) => {
-                    if (!categoriesData.success) {
-                        toast.error(categoriesData.message as string);
-                    }
-                    if (!provincesData.success) {
-                        toast.error(provincesData.message as string);
-                    }
-                    setState({
-                        categories: categoriesData.data,
-                        provinces: provincesData.data,
-                    });
-                })
-                .catch((error) => {
-                    toast.error(
-                        error instanceof Error ? error.message : "Failed to load filter data"
-                    );
-                });
-        })();
-    }, [setState]);
 
     useEffect(() => {
         (async () => {

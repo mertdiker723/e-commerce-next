@@ -7,6 +7,7 @@ import "./globals.css";
 
 // Libs
 import ReduxProvider from "@/lib/redux/provider";
+import ReactQueryProvider from "@/lib/react-query/provider";
 
 // Components
 import NavbarWrapper from "@/common/Navbar/navbarWrapper";
@@ -35,11 +36,13 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <ReduxProvider>
-                    <NavbarWrapper />
-                    {children}
-                    <Toaster position="top-right" />
-                </ReduxProvider>
+                <ReactQueryProvider>
+                    <ReduxProvider>
+                        <NavbarWrapper />
+                        {children}
+                        <Toaster position="top-right" />
+                    </ReduxProvider>
+                </ReactQueryProvider>
             </body>
         </html>
     );

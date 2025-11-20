@@ -66,7 +66,7 @@ const Pagination: React.FC<PaginationProps> = ({
     };
 
     useEffect(() => {
-        if (currentPage > totalPages && !loading) {
+        if (totalPages > 0 && currentPage > totalPages && !loading) {
             updateURL(totalPages);
         }
     }, [currentPage, updateURL, loading, totalPages]);

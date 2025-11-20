@@ -2,7 +2,7 @@
 import { Brand } from "./brand.model";
 import { Category } from "./category.model";
 import { Retailer } from "./retailer.model";
-import { Image } from "./shared/index.model";
+import { Image } from "./image.model";
 import { SubCategory } from "./subCategory.model";
 
 export interface Product {

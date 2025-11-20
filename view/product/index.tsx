@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import toast from "react-hot-toast";
 
 // Common
 import { Table } from "@/common/Table";
@@ -14,196 +12,51 @@ import { SecondColumn } from "@/components/product/listing/SecondColumn";
 
 // Types
 import { Product } from "@/models/product.model";
-import { RetailerDropdown } from "@/models/retailer.model";
 
 // Hooks
-import { useMergeState } from "@/hooks/useMergeState";
-
-// Services
-import { productService } from "@/services/product.service";
-import { brandService } from "@/services/brand.services";
-import { retailerService } from "@/services/retailer.services";
-import { categoryService } from "@/services/category.services";
-import { locationService } from "@/services/location.services";
-import { subCategoryService } from "@/services/subCategory.services";
-
-// Models
-import { Category } from "@/models/category.model";
-import { Brand } from "@/models/brand.model";
-import { Province } from "@/models/province.model";
-import { District } from "@/models/district.model";
-import { Neighborhood } from "@/models/neighborhood.model";
-import { SubCategory } from "@/models/subCategory.model";
-
-type ProductState = {
-    products: Product[];
-    retailers: RetailerDropdown[];
-    categories: Category[];
-    brands: Brand[];
-    provinces: Province[];
-    districts: District[];
-    neighborhoods: Neighborhood[];
-    subCategories: SubCategory[];
-    productLoader: boolean;
-    errorMessage: string | null;
-    totalCount: number;
-    totalPages: number;
-};
+import { useProvinces } from "@/lib/react-query/hooks/location/useProvinces";
+import { useCategories } from "@/lib/react-query/hooks/category/useCategories";
+import { useBrands } from "@/lib/react-query/hooks/brand/useBrands";
+import { useSubCategories } from "@/lib/react-query/hooks/subCategory/useSubCategories";
+import { useDistricts } from "@/lib/react-query/hooks/location/useDistricts";
+import { useNeighborhoods } from "@/lib/react-query/hooks/location/useNeighborhoods";
+import { useRetailers } from "@/lib/react-query/hooks/retailer/useRetailer";
+import { useProducts } from "@/lib/react-query/hooks/product/useProduct";
 
 const ProductPage = () => {
-    const [state, setState] = useMergeState<ProductState>({
-        products: [],
-        retailers: [],
-        categories: [],
-        brands: [],
-        provinces: [],
-        districts: [],
-        neighborhoods: [],
-        subCategories: [],
-        productLoader: true,
-        errorMessage: null,
-        totalCount: 0,
-        totalPages: 0,
-    });
-
-    const {
-        products,
-        retailers = [],
-        categories = [],
-        brands = [],
-        provinces = [],
-        districts = [],
-        neighborhoods = [],
-        subCategories = [],
-        productLoader,
-        errorMessage,
-        totalCount,
-        totalPages,
-    } = state || {};
-
     const searchParams = useSearchParams();
 
-    const provinceId = useMemo(() => searchParams?.get("province"), [searchParams]);
-    const districtId = useMemo(() => searchParams?.get("district"), [searchParams]);
-    const categoryId = useMemo(() => searchParams?.get("category"), [searchParams]);
+    const categoryId = searchParams?.get("category") as string;
+    const provinceId = searchParams?.get("province") as string;
+    const districtId = searchParams?.get("district") as string;
 
-    useEffect(() => {
-        (async () => {
-            await Promise.all([
-                retailerService.getRetailersDropdown(),
-                categoryService.getCategoriesDropdown(),
-                locationService.getProvinces(),
-            ])
-                .then(([retailersData, categoriesData, provincesData]) => {
-                    if (!retailersData.success) {
-                        toast.error(retailersData.message as string);
-                    }
-                    if (!categoriesData.success) {
-                        toast.error(categoriesData.message as string);
-                    }
+    // React Query hooks
+    const { data: provincesData } = useProvinces();
+    const provinces = provincesData?.data || [];
 
-                    if (!provincesData.success) {
-                        toast.error(provincesData.message as string);
-                    }
-                    setState({
-                        retailers: retailersData.data,
-                        categories: categoriesData.data,
-                        provinces: provincesData.data,
-                    });
-                })
-                .catch((error) => {
-                    toast.error(
-                        error instanceof Error ? error.message : "Failed to load filter data"
-                    );
-                });
-        })();
-    }, [setState]);
+    const { data: categoriesData } = useCategories();
+    const categories = categoriesData?.data || [];
 
-    useEffect(() => {
-        (async () => {
-            setState({ productLoader: true });
-            const result = await productService.getProducts(searchParams);
-            if (!result.status) {
-                setState({ errorMessage: result.message, productLoader: false });
-                return;
-            }
+    const { data: brandsData } = useBrands(categoryId);
+    const brands = brandsData?.data || [];
 
-            setState({
-                products: result.data,
-                productLoader: false,
-                totalCount: result.totalCount,
-                totalPages: result.totalPages,
-            });
-        })();
-    }, [searchParams, setState]);
+    const { data: subCategoriesData } = useSubCategories(categoryId);
+    const subCategories = subCategoriesData?.data || [];
 
-    useEffect(() => {
-        (async () => {
-            if (!categoryId) {
-                setState({ subCategories: [], brands: [] });
-                return;
-            }
+    const { data: districtsData } = useDistricts(provinceId);
+    const districts = districtsData?.data || [];
 
-            const [subCategoriesData, brandsData] = await Promise.all([
-                subCategoryService.getSubCategoriesDropdown(categoryId as string),
-                brandService.getBrandsDropdown(categoryId as string),
-            ]);
+    const { data: neighborhoodsData } = useNeighborhoods(provinceId, districtId);
+    const neighborhoods = neighborhoodsData?.data || [];
 
-            if (!subCategoriesData.success) {
-                toast.error(subCategoriesData.message as string);
-                setState({ subCategories: [] });
-                return;
-            }
-            if (!brandsData.success) {
-                toast.error(brandsData.message as string);
-                setState({ brands: [] });
-                return;
-            }
-            setState({ subCategories: subCategoriesData.data, brands: brandsData.data });
-        })();
-    }, [categoryId, setState]);
+    const { data: retailersData } = useRetailers();
+    const retailers = retailersData?.data || [];
 
-    useEffect(() => {
-        (async () => {
-            if (!provinceId) {
-                setState({ districts: [], neighborhoods: [] });
-                return;
-            }
-
-            const { data, success, message } = await locationService.getDistricts(
-                Number(provinceId)
-            );
-
-            if (!success) {
-                toast.error(message as string);
-                setState({ districts: [], neighborhoods: [] });
-                return;
-            }
-
-            setState({ districts: data, neighborhoods: [] });
-        })();
-    }, [provinceId, setState]);
-
-    useEffect(() => {
-        (async () => {
-            if (!districtId || !provinceId) {
-                setState({ neighborhoods: [] });
-                return;
-            }
-
-            const { data, success, message } = await locationService.getNeighborhoods(
-                Number(districtId)
-            );
-
-            if (!success) {
-                toast.error(message as string);
-                setState({ neighborhoods: [] });
-                return;
-            }
-
-            setState({ neighborhoods: data });
-        })();
-    }, [districtId, provinceId, setState]);
+    const { data: productsData, isLoading } = useProducts(searchParams);
+    const products = productsData?.data || [];
+    const errorMessage = productsData?.message || null;
+    const totalCount = productsData?.totalCount || 0;
+    const totalPages = productsData?.totalPages || 0;
 
     const filterValues = {
         retailers,
@@ -230,7 +83,7 @@ const ProductPage = () => {
                 <div className="lg:flex-1">
                     <Table
                         items={products}
-                        loading={productLoader}
+                        loading={isLoading}
                         errorMessage={errorMessage}
                         filteringItems={{ searchPlaceholder: "Search by product name" }}
                         FirstColumn={(props: { item: Product }) => (

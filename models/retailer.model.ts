@@ -1,7 +1,7 @@
 import { District } from "./district.model";
 import { Neighborhood } from "./neighborhood.model";
 import { Province } from "./province.model";
-import { Image } from "./shared/index.model";
+import { Image } from "./image.model";
 
 export interface Retailer {
     _id: string;
