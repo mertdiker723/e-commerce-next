@@ -1,167 +1,51 @@
 "use client";
 
-import { useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import toast from "react-hot-toast";
 
 // Common
 import Filter from "@/common/Filter";
 import Table from "@/common/Table";
 
 // Hooks
-import { useMergeState } from "@/hooks/useMergeState";
+import { useRetailers } from "@/lib/react-query/hooks/retailers/useRetailer";
+import { useCategories } from "@/lib/react-query/hooks/category/useCategories";
+import { useBrands } from "@/lib/react-query/hooks/brand/useBrands";
+import { useSubCategories } from "@/lib/react-query/hooks/subCategory/useSubCategories";
 
 // Models
 import { Favorite } from "@/models/favorite.model";
-import { RetailerDropdown } from "@/models/retailer.model";
-import { Category } from "@/models/category.model";
-import { Brand } from "@/models/brand.model";
-import { SubCategory } from "@/models/subCategory.model";
 
 // Components
 import { FirstColumn } from "@/components/product/listing/FirstColumn";
 import { SecondColumn } from "@/components/product/listing/SecondColumn";
 
 // Services
-import { brandService } from "@/services/brand.services";
-import { retailerService } from "@/services/retailer.services";
-import { categoryService } from "@/services/category.services";
-import { favoriteService } from "@/services/favorite.service";
-import { subCategoryService } from "@/services/subCategory.services";
-
-type FavoriteState = {
-    favorites: Favorite[];
-    retailers: RetailerDropdown[];
-    errorMessage: string | null;
-    isLoading: boolean;
-    totalCount: number;
-    totalPages: number;
-    categories: Category[];
-    brands: Brand[];
-    subCategories: SubCategory[];
-};
+import { useFavorites, useDeleteFavorite } from "@/lib/react-query/hooks/favorite/useFavorite";
 
 const FavoritePage = () => {
-    const [state, setState] = useMergeState<FavoriteState>({
-        favorites: [],
-        errorMessage: null,
-        isLoading: true,
-        retailers: [],
-        categories: [],
-        brands: [],
-        subCategories: [],
-        totalCount: 0,
-        totalPages: 0,
-    });
-
-    const {
-        favorites,
-        errorMessage,
-        isLoading,
-        totalCount,
-        totalPages,
-        retailers,
-        categories,
-        brands,
-        subCategories,
-    } = state || {};
-
     const searchParams = useSearchParams();
+    const categoryId = searchParams?.get("category") as string;
 
-    const categoryId = useMemo(() => searchParams?.get("category"), [searchParams]);
+    // React Query hooks
+    const { data: retailersData } = useRetailers();
+    const retailers = retailersData?.data || [];
 
-    const handleDelete = async (favoriteId: string) => {
-        const { success, message } = await favoriteService.deleteFavorite(favoriteId);
-        if (!success) {
-            toast.error(message || "Failed to delete favorite");
-            return;
-        }
-        toast.success("Favorite removed successfully");
-        await getFavorites();
-    };
+    const { data: categoriesData } = useCategories();
+    const categories = categoriesData?.data || [];
 
-    const getFavorites = useCallback(async () => {
-        setState({ isLoading: true });
-        const { data, message, success, totalCount, totalPages } =
-            await favoriteService.getFavorites(searchParams);
-        if (!success) {
-            setState({ errorMessage: message, isLoading: false });
-            return;
-        }
+    const { data: brandsData } = useBrands(categoryId as string);
+    const brands = brandsData?.data || [];
 
-        setState({
-            isLoading: false,
-            favorites: data || [],
-            totalCount: totalCount,
-            totalPages: totalPages,
-        });
-    }, [searchParams, setState]);
+    const { data: subCategoriesData } = useSubCategories(categoryId as string);
+    const subCategories = subCategoriesData?.data || [];
 
-    useEffect(() => {
-        (async () => {
-            await Promise.all([
-                retailerService.getRetailersDropdown(),
-                categoryService.getCategoriesDropdown(),
-            ])
-                .then(([retailersResponse, categoriesResponse]) => {
-                    if (!retailersResponse.success) {
-                        toast.error(retailersResponse.message as string);
-                    }
-                    if (!categoriesResponse.success) {
-                        toast.error(categoriesResponse.message as string);
-                    }
-                    setState({
-                        retailers: retailersResponse.data || [],
-                        categories: categoriesResponse.data || [],
-                    });
-                })
-                .catch((error) => {
-                    toast.error(
-                        error instanceof Error ? error.message : "Failed to load filter data"
-                    );
-                });
-        })();
-    }, [setState]);
+    const { data: favoritesData, isLoading } = useFavorites(searchParams);
+    const favorites = favoritesData?.data || [];
+    const errorMessage = favoritesData?.message || null;
+    const totalCount = favoritesData?.totalCount || 0;
+    const totalPages = favoritesData?.totalPages || 0;
 
-    useEffect(() => {
-        (async () => {
-            if (!categoryId) {
-                setState({ subCategories: [] });
-                return;
-            }
-            const { data, success, message } = await subCategoryService.getSubCategoriesDropdown(
-                categoryId as string
-            );
-            if (!success) {
-                toast.error(message as string);
-                setState({ subCategories: [] });
-                return;
-            }
-            setState({ subCategories: data });
-        })();
-    }, [categoryId, setState]);
-
-    useEffect(() => {
-        (async () => {
-            if (!categoryId) {
-                setState({ brands: [] });
-                return;
-            }
-            const { data, success, message } = await brandService.getBrandsDropdown(
-                categoryId as string
-            );
-            if (!success) {
-                toast.error(message as string);
-                setState({ brands: [] });
-                return;
-            }
-            setState({ brands: data });
-        })();
-    }, [categoryId, setState]);
-
-    useEffect(() => {
-        getFavorites();
-    }, [getFavorites]);
+    const { mutate: deleteFavorite, isPending } = useDeleteFavorite();
 
     const filterValues = {
         retailers,
@@ -199,7 +83,8 @@ const FavoritePage = () => {
                             <SecondColumn
                                 productData={props.item.product}
                                 productId={props.item.product._id}
-                                onDelete={() => handleDelete(props.item._id)}
+                                onDelete={() => deleteFavorite(props.item._id)}
+                                isDeletingLoader={isPending}
                             />
                         )}
                         totalCount={totalCount}

@@ -33,7 +33,7 @@ const Sorting = ({ filteringItems }: SortingProps) => {
     }, [searchParams]);
 
     const handleFilter = useCallback(
-        (filters: { sort?: string; search?: string }) => {
+        (filters: { sort?: string | null; search?: string }) => {
             const params = new URLSearchParams(searchParams);
 
             if (filters.sort !== undefined) {
@@ -88,6 +88,9 @@ const Sorting = ({ filteringItems }: SortingProps) => {
                     options={sortOptions}
                     value={searchParams.get("sort") || ""}
                     onChange={(value) => handleFilter({ sort: value as string })}
+                    onClearChange={() => {
+                        handleFilter({ sort: null });
+                    }}
                 />
             </div>
         </div>

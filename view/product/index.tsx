@@ -20,7 +20,7 @@ import { useBrands } from "@/lib/react-query/hooks/brand/useBrands";
 import { useSubCategories } from "@/lib/react-query/hooks/subCategory/useSubCategories";
 import { useDistricts } from "@/lib/react-query/hooks/location/useDistricts";
 import { useNeighborhoods } from "@/lib/react-query/hooks/location/useNeighborhoods";
-import { useRetailers } from "@/lib/react-query/hooks/retailer/useRetailer";
+import { useRetailers } from "@/lib/react-query/hooks/retailers/useRetailer";
 import { useProducts } from "@/lib/react-query/hooks/product/useProduct";
 
 const ProductPage = () => {

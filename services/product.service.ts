@@ -74,6 +74,7 @@ export class ProductService {
                 totalCount: res.totalCount,
                 totalPages: res.totalPages,
                 success: res.success,
+                message: res.message,
             };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Products fetch error";

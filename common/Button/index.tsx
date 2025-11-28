@@ -30,7 +30,7 @@ const Button = ({
             onClick={onClick}
         >
             <span className="flex items-center justify-center gap-2">
-                {isPending && <span className="pending"></span>}
+                {isPending && <span className="button__pending"></span>}
                 {label && <span>{label}</span>}
                 {icon && icon}
             </span>

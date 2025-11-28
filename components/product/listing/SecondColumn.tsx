@@ -9,9 +9,15 @@ interface SecondColumnProps {
     productData: Product;
     productId: string;
     onDelete?: () => void;
+    isDeletingLoader?: boolean;
 }
 
-export const SecondColumn = ({ productData, productId, onDelete }: SecondColumnProps) => {
+export const SecondColumn = ({
+    productData,
+    productId,
+    onDelete,
+    isDeletingLoader,
+}: SecondColumnProps) => {
     const router = useRouter();
     const { price, stock, createdAt } = productData || {};
 
@@ -69,6 +75,7 @@ export const SecondColumn = ({ productData, productId, onDelete }: SecondColumnP
                         onClick={onDelete}
                         customClassName="flex-1 md:w-35 bg-red-600 hover:bg-red-700 text-white px-4 py-2 md:px-6 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md cursor-pointer"
                         label="Delete"
+                        isPending={isDeletingLoader}
                     />
                 )}
             </div>
