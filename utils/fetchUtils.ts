@@ -9,17 +9,32 @@ interface FetchOptions {
     credentials?: RequestCredentials;
 }
 
+// Helper function to get cookie value by name
+const getCookie = (name: string): string | null => {
+    if (typeof document === 'undefined') return null;
+    
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+        return parts.pop()?.split(';').shift() || null;
+    }
+    return null;
+};
+
 export const fetchApi = async <T = unknown>(
     url: string,
     options: FetchOptions = {}
 ): Promise<T> => {
+    // Get token from cookie
+    const token = getCookie('token');
+    
     const requestOptions: RequestInit = {
         method: options.method || "GET",
         headers: {
             "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }), // Add token to Authorization header
             ...options.headers,
         },
-        credentials: "include", // Send cookies with cross-origin requests
     };
 
     if (options.body) {
