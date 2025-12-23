@@ -5,3 +5,10 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+# Environment variables
+# IMPORTANT: You MUST also set these in Netlify Dashboard:
+# Site settings → Environment variables → Add variable
+# 
+# NEXT_PUBLIC_BASE_URL = "https://e-commerce-api-n2xw.onrender.com/api"
+# BACKEND_URL = "https://e-commerce-api-n2xw.onrender.com/api"
+
