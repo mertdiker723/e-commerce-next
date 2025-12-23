@@ -33,10 +33,10 @@ const FavoritePage = () => {
     const { data: categoriesData } = useCategories();
     const categories = categoriesData?.data || [];
 
-    const { data: brandsData } = useBrands(categoryId as string);
+    const { data: brandsData } = useBrands(categoryId);
     const brands = brandsData?.data || [];
 
-    const { data: subCategoriesData } = useSubCategories(categoryId as string);
+    const { data: subCategoriesData } = useSubCategories(categoryId);
     const subCategories = subCategoriesData?.data || [];
 
     const { data: favoritesData, isLoading } = useFavorites(searchParams);

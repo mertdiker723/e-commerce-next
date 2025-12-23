@@ -105,37 +105,33 @@ const RetailerPage = ({ retailerId }: RetailerPageProps) => {
             {retailerLoading ? (
                 <RetailerSkeleton />
             ) : (
-                <>
-                    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-8">
-                            <RetailerImage url={image?.url} name={businessName} />
-                            <div className="space-y-6">
-                                {!retailerData?.success ? (
-                                    <RetailerErrorMessage
-                                        errorMessage={retailerData?.message || ""}
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-8">
+                        <RetailerImage url={image?.url} name={businessName} />
+                        <div className="space-y-6">
+                            {!retailerData?.success ? (
+                                <RetailerErrorMessage errorMessage={retailerData?.message || ""} />
+                            ) : (
+                                <>
+                                    <RetailerProfile
+                                        businessName={businessName}
+                                        name={name}
+                                        surname={surname}
                                     />
-                                ) : (
-                                    <>
-                                        <RetailerProfile
-                                            businessName={businessName}
-                                            name={name}
-                                            surname={surname}
-                                        />
 
-                                        <RetailerContact
-                                            email={email}
-                                            phoneNumber={phoneNumber}
-                                            openAddress={openAddress}
-                                            province={province}
-                                            district={district}
-                                            neighborhood={neighborhood}
-                                        />
-                                    </>
-                                )}
-                            </div>
+                                    <RetailerContact
+                                        email={email}
+                                        phoneNumber={phoneNumber}
+                                        openAddress={openAddress}
+                                        province={province}
+                                        district={district}
+                                        neighborhood={neighborhood}
+                                    />
+                                </>
+                            )}
                         </div>
                     </div>
-                </>
+                </div>
             )}
 
             <div className="lg:flex lg:gap-6 mt-6">
